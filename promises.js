@@ -6,6 +6,16 @@ import { signalAborted } from './abort.js';
 import { listen, onKeypress } from './events.js';
 export const infinitPromise = new Promise(() => {});
 
+export async function locksSupported() {
+	if ('locks' in navigator) {
+		try {
+			return await navigator.locks.request('lock-test', () => true);
+		} catch(err) {
+			return false;
+		}
+	}
+}
+
 export function isAsyncFunction(what) {
 	return what instanceof Function && what.constructor.name === 'AsyncFunction';
 }
@@ -81,6 +91,26 @@ export function createDeferredCallback(callback, { signal, thisArg } = {}) {
 		resolve();
 		return await retPromise;
 	};
+}
+
+export async function lock(name, callback, {
+	thisArg = globalThis,
+	args = [],
+	mode = 'exclusive',
+	ifAvailable = false,
+	steal = false,
+	allowFallback = true,
+	signal,
+} = {}) {
+	if ((! allowFallback) || await locksSupported()) {
+		return await navigator.locks.request(name, { mode, ifAvailable, steal, signal }, async lock => {
+			if (lock) {
+				return await callAsAsync(callback, [lock, ...args], { thisArg, signal });
+			}
+		});
+	} else {
+		return await callAsAsync(callback, [null, ...args], { signal, thisArg });
+	}
 }
 
 export async function onAnimationFrame(callback, {

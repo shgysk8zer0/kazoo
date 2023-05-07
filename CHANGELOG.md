@@ -19,3 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Added missing `icons.js` module
+
+## [v0.0.4] - 2023-05-07
+
+### Fixed
+- Re-add `lock()` in `promises.js` module
