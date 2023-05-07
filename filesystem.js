@@ -2,7 +2,7 @@
  * @copyright 2023 Chris Zuber <admin@kernvalley.us>
  */
 import { getDeferred, lock } from './promises.js';
-import { create } from './dom.js';
+import { createElement, createInput } from './elements.js';
 
 export async function save(file, { signal } = {}) {
 	if (signal instanceof EventTarget && signal.aborted) {
@@ -43,9 +43,9 @@ export async function open({
 
 			if (! (signal instanceof AbortSignal && signal.aborted)) {
 				const uuid = crypto.randomUUID();
-				const dialog = create('dialog', {
+				const dialog = createElement('dialog', {
 					'children': [
-						create('form', {
+						createElement('form', {
 							'name': 'file-picker',
 							'events': {
 								'submit': event => {
@@ -70,19 +70,18 @@ export async function open({
 								'reset': ({ target }) => target.closest('dialog').close(),
 							},
 							'children': [
-								create('div', {
+								createElement('div', {
 									'classList': ['form-group'],
 									'children': [
-										create('label', {
+										createElement('label', {
 											'text': description,
 											'for': uuid,
 											'classList': ['input-label', 'block', 'required', 'cursor-pointer'],
 										}),
-										create('input', {
+										createInput('files', {
 											'id': uuid,
 											'classList': ['input'],
 											'type': 'file',
-											'name': 'files',
 											'accept': Array.isArray(accept) ? accept.join(', ') : accept,
 											'webkitdirectory': directory,
 											'required': true,
@@ -90,19 +89,19 @@ export async function open({
 										})
 									]
 								}),
-								create('div', {
+								createElement('div', {
 									'classList': ['flex', 'row', 'no-wrap'],
 									'styles': {
 										'margin-top': '18px',
 										'gap': '2em',
 									},
 									'children': [
-										create('button', {
+										createElement('button', {
 											'type': 'submit',
 											'text': 'Ok',
 											'classList': ['btn', 'btn-accept', 'grow-1'],
 										}),
-										create('button', {
+										createElement('button', {
 											'text': 'Cancel',
 											'type': 'reset',
 											'classList': ['btn', 'btn-reject', 'grow-1'],

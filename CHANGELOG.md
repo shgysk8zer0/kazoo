@@ -24,3 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Re-add `lock()` in `promises.js` module
+
+## [v0.0.5] - 2023-05-07
+
+### Fixed
+- Use `createElement` instead of `create` in filesystem module
