@@ -50,6 +50,8 @@ jobs:
       - name: Lint Code Base
         uses: docker://github/super-linter:v4
         env:
+          LINTER_RULES_PATH: /
+          JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: master
@@ -76,3 +78,4 @@ jobs:
           # ANSIBLE_DIRECTORY:
           # ACTIONS_RUNNER_DEBUG: true
           # DEFAULT_WORKSPACE:
+
