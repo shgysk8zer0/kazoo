@@ -4,6 +4,7 @@ test/
 .editorconfig
 .eslintignore
 .eslintrc.json
+.htmlhintrc
 .gitattributes
 .gitignore
 .nvmrc
