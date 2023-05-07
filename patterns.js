@@ -1,7 +1,9 @@
 /**
  * @copyright 2023 Chris Zuber <admin@kernvalley.us>
  */
-export const TEXT         = /^(\w+ ?)+$/;
+// Inefficient regular expression
+// export const TEXT         = /^(\w+ ?)+$/;
+
 export const NAME         = /^[A-Za-z]{3,30}$/;
 export const PASSWORD     = /^(?=^.{8,35}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/;
 export const EMAIL        = /^.+@.+\.+[\w]+$/;
