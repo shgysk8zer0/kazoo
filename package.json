@@ -1,6 +1,6 @@
 {
   "name": "@shgysk8zer0/kazoo",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "description": "A JavaScript monorepo for all the things!",
   "main": "index.js",
@@ -18,7 +18,18 @@
     }
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run lint:js && npm run lint:html",
+    "preversion": "npm test",
+    "start": "http-server ${npm_package_config_serve_path} -c-1 --port ${npm_package_config_serve_port} --gzip true --brotli true -a ${npm_package_config_serve_domain} -o /test/",
+    "fix": "npm run fix:js",
+    "fix:js": "eslint . --fix",
+    "lint:js": "eslint .",
+    "lint:html": "htmlhint \"**/*.html\"",
+    "create:lock": "npm i --package-lock-only --ignore-scripts",
+    "version:bump": "npm run version:bump:patch",
+    "version:bump:patch": "npm version --no-git-tag-version patch",
+    "version:bump:minor": "npm version --no-git-tag-version minor",
+    "version:bump:major": "npm version --no-git-tag-version major"
   },
   "repository": {
     "type": "git",
@@ -36,20 +47,6 @@
     "url": "https://github.com/shgysk8zer0/kazoo/issues"
   },
   "homepage": "https://github.com/shgysk8zer0/kazoo#readme",
-  "scripts": {
-    "test": "npm run lint:js && npm run lint:html",
-    "preversion": "npm test",
-    "start": "http-server ${npm_package_config_serve_path} -c-1 --port ${npm_package_config_serve_port} --gzip true --brotli true -a ${npm_package_config_serve_domain} -o /test/",
-    "fix": "npm run fix:js",
-    "fix:js": "eslint . --fix",
-    "lint:js": "eslint .",
-    "lint:html": "htmlhint \"**/*.html\"",
-    "create:lock": "npm i --package-lock-only --ignore-scripts",
-    "version:bump": "npm run version:bump:patch",
-    "version:bump:patch": "npm version --no-git-tag-version patch",
-    "version:bump:minor": "npm version --no-git-tag-version minor",
-    "version:bump:major": "npm version --no-git-tag-version major"
-  },
   "devDependencies": {
     "eslint": "^8.40.0",
     "htmlhint": "^1.1.4",
