@@ -75,8 +75,8 @@ export function randomFloat(min, max) {
 	return Math.random() * (max - min + 1) + min;
 }
 
-export function randomInt(min = 0, max = 100) {
-	return min + crypto.getRandomValues(new Uint32Array(1))[0] % (max - min + 1);
+export function randomInt() {
+	return crypto.getRandomValues(new Uint32Array(1))[0];
 }
 
 export function* rng({ length = 32 } = {}) {
