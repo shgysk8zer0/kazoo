@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-trusted-policies="empty#html empty#script custom#html sanitizer-raw#html youtube#embed">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="color-scheme" content="light dark" />
+		<meta http-equiv="Content-Security-Policy" content="
+			default-src 'self';
+			base-uri 'self';
+			manifest-src 'self';
+			prefetch-src 'self';
+			script-src 'self' unpkg.com/@shgysk8zer0/
+			style-src 'self';
+			font-src cdn.kernvalley.us;
+			form-action 'none';
+			frame-src https://www.youtube-nocookie.com/embed/;
+			object-src 'none';
+			media-src 'none';
+			child-src 'none';
+			frame-ancestors 'none';
+			connect-src 'self' cdn.kernvalley.us api.github.com/users/ api.pwnedpasswords.com/range/ maps.kernvalley.us/places/ events.kernvalley.us/events.json;
+			img-src * data: blob:;
+			require-trusted-types-for 'script';
+			trusted-types empty#html empty#script custom#html sanitizer-raw#html youtube#embed;
+			upgrade-insecure-requests;"
+		/>
+		<title>Kazoo</title>
+		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-vbwqYOL6vgTrQxxJHaYamGL6FP7aevCQWei5ZMBOYpVWog5cn/XHuLPGgDWxdMf7" src="https://unpkg.com/@shgysk8zer0/polyfills@0.0.3/all.min.js" fetchpriority="high"></script>
+		<script src="/harden.js" referrerpolicy="no-referrer" defer=""></script>
+		<script type="module" src="./js/index.js" referrerpolicy="no-referrer"></script>
+		<link rel="stylesheet" href="./css/index.css" referrerpolicy="no-referrer" media="all" />
+		<link rel="icon" type="image/svg+xml" sizes="any" href="./favicon.svg" />
+	</head>
+	<body>
+		<header id="header"></header>
+		<nav id="nav"></nav>
+		<main id="main"></main>
+		<aside id="sidebar">&copy;</aside>
+		<footer id="footer"></footer>
+	</body>
+</html>
