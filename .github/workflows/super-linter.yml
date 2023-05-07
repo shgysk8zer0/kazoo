@@ -56,7 +56,7 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           DEFAULT_BRANCH: master
           VALIDATE_YAML: true
-          VALIDATE_JSON: false
+          # VALIDATE_JSON: false
           # VALIDATE_XML: true
           VALIDATE_MD: true
           # VALIDATE_HTML: true
