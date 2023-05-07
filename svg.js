@@ -128,6 +128,7 @@ export function createSVG({
 	const svg = createSVGElement('svg', { width, height, fill, animation, children, id, classList, ...rest });
 
 	svg.setAttribute('role', role);
+	svg.setAttribute('xmlns', SVG);
 
 	if (typeof viewBox === 'string') {
 		svg.setAttributeNS(null, 'viewBox', viewBox);
