@@ -111,6 +111,10 @@ export function isUndefined(val) {
 	return typeof val === 'undefined';
 }
 
+export function isIterable(thing) {
+	return Array.isArray(thing) || (isObject(thing) && thing[Symbol.iterator] instanceof Function);
+}
+
 export function isNullish(val) {
 	switch (typeof val) {
 		case 'undefined':

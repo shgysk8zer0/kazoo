@@ -6,7 +6,7 @@ import { addListener, listen } from './events.js';
 import { getDeferred, isAsync } from './promises.js';
 import { isHTML, isTrustPolicy } from './trust.js';
 import { HTML } from './types.js';
-import { errorToEvent, callOnce, isNullish } from './utility.js';
+import { errorToEvent, callOnce, isNullish, isIterable } from './utility.js';
 import { data as setData, css as setCss, attr as setAttr, aria as setAria } from './attrs.js';
 
 export const readyStates = ['loading', 'interactive', 'complete'];
@@ -27,7 +27,7 @@ export function query(what, base = document) {
 			matches.push(base);
 		}
 		return matches;
-	} else if (typeof what === 'object' && what[Symbol.iterator] instanceof Function) {
+	} else if (isIterable(what)) {
 		return Array.from(what);
 	} else {
 		throw new TypeError('Invalid "what" given to query()');
@@ -479,7 +479,7 @@ export function parseAsFragment(text, {
 		: tmp.content;
 }
 
-export function animate(what, keyframes, opts = { duration: 400 }) {
+export function animate(what, keyframes, opts = { duration: 400, base: document.body }) {
 	if (opts.signal instanceof AbortSignal && opts.signal.aborted) {
 		throw opts.signal.reason;
 	} else if (! (Element.prototype.animate instanceof Function)) {
@@ -489,10 +489,15 @@ export function animate(what, keyframes, opts = { duration: 400 }) {
 			opts = { duration: opts };
 		}
 
-		const animations = query(what).map(item => item.animate(keyframes, opts));
+		const animations = query(what, opts.base).map(item => item.animate(keyframes, opts));
 
 		if (opts.signal instanceof AbortSignal) {
 			opts.signal.addEventListener('abort', () => animations.forEach(anim => anim.cancel()), { once: true });
+		}
+
+		if (opts.resolve instanceof Function) {
+			Promise.allSettled(animations.map(anim => anim.finished))
+				.then(proms => opts.resolve(proms.group(({ status }) => status)));
 		}
 
 		return animations;

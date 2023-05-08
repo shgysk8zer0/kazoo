@@ -6,7 +6,7 @@ import { listen } from './events.js';
 import { getDeferred } from './promises.js';
 import { setProp } from './trust.js';
 import { REFERRER_POLICY } from './defaults.js';
-import { isObject, isNullish } from './utility.js';
+import { isObject, isNullish, isIterable } from './utility.js';
 import { JS } from './types.js';
 import { isScriptURL, isHTML } from './trust.js';
 
@@ -148,7 +148,7 @@ export function createElement(tag, {
 			}
 		}
 
-		if (Array.isArray(children)) {
+		if (isIterable(children)) {
 			el.append(...children.filter(el => typeof el === 'string' || el instanceof Element));
 		}
 
@@ -196,7 +196,7 @@ export function createElement(tag, {
 			setAria(el, aria);
 		}
 
-		if (Array.isArray(keyframes) || isObject(keyframes) && el.animate instanceof Function) {
+		if ((Array.isArray(keyframes) || isObject(keyframes)) && el.animate instanceof Function) {
 			el.animate(keyframes, {
 				duration, delay, endDelay, easing, direction, fill, iterations,
 				iterationStart, composite, iterationComposite, pseudoElement,

@@ -18,16 +18,22 @@ body {
 
 #header {
 	grid-area: header;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 8px;
 }
 
 #nav {
 	grid-area: nav;
 	position: sticky;
+	padding: 4px;
 	top: 0;
 	height: var(--nav-height);
 	display: flex;
 	flex-direction: row;
-	background-image: linear-gradient(red, blue);
+	gap: 0.8em;
+	background-image: linear-gradient(var(--accent-color), #1515ce);
 }
 
 #main {
@@ -42,4 +48,9 @@ body {
 	grid-area: footer;
 	background-color: #242424;
 	color: #fafafa;
+}
+
+dialog::backdrop {
+	background-color: rgba(0, 0, 0, 0.7);
+	backdrop-filter: blur(3px);
 }
