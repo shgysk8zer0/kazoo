@@ -131,33 +131,6 @@ export function listen(target, event, callback, { capture, once, passive, signal
 	}
 }
 
-export function onKeypress(key, callback, {
-	target = globalThis,
-	type = 'keypress',
-	capture,
-	once,
-	passive,
-	signal,
-	altKey,
-	ctrlKey,
-	metaKey,
-	shiftKey,
-} = {}) {
-	listen(target, type, function handler(event) {
-		if (
-			event.isTrusted && event.key.toLowerCase() === key.toLowerCase()
-			&& Object.entries({ ctrlKey, altKey, shiftKey, metaKey }).every(([name, value]) => {
-				return typeof value !== 'boolean' || event[name] === value;
-			})) {
-			if (once) {
-				target.removeEventListener(type, handler, { passive, capture, signal });
-			}
-
-			callback.call(this, event);
-		}
-	}, { passive, capture, signal });
-}
-
 export async function once(target, event, { capture, passive, signal } = {}) {
 	const { resolve, promise } = getDeferred({ signal, reason: new DOMException('Operation aborted') });
 	listen(target, event, resolve, { capture, once: true, passive, signal });
@@ -214,4 +187,40 @@ export async function whenHidden({ signal } = {}) {
 	if (document.visibilityState === 'visible') {
 		await when(document, 'visibilitychange', { signal });
 	}
+}
+
+export async function* yieldEvents(target, event, { capture, passive, signal } = {}) {
+	const pending = [];
+	const def = {};
+
+	if (! (signal instanceof AbortSignal)) {
+		throw new TypeError('`signal` required to be an `AbortSignal`.');
+	}
+
+	target.addEventListener(event, ev => {
+		if (def.resolve instanceof Function) {
+			const resolve = def.resolve;
+			delete def.resolve;
+			resolve(ev);
+		} else {
+			pending.push(ev);
+		}
+	}, { capture, passive, signal });
+
+	while (! signal.aborted) {
+		while (pending.length !== 0 && ! signal.aborted) {
+			yield pending.shift();
+		}
+
+		if (! (def.resolve instanceof Function)) {
+			const { resolve, promise, reject } = getDeferred();
+			def.resolve = resolve;
+			def.reject = reject;
+			def.promise = promise;
+		}
+
+		yield await def.promise;
+	}
+
+	return pending;
 }

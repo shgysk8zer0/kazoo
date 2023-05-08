@@ -29,3 +29,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Use `createElement` instead of `create` in filesystem module
+
+## [v0.0.6] - 2023-05-08
+
+### Added
+- Module for animations
+- Async function that `yield`s events dispatched on a target
+- Function to tell if a thing is iterable
+- More testing/example code
+
+### Changed
+- Handle `Iterator`/`Generator` children in `createElement()`
+
+### Removed
+- A bunch of bad old code in promises module

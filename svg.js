@@ -5,10 +5,7 @@ import { SVG, XLINK } from './namespaces.js';
 import { isObject } from './utility.js';
 import { css, data, attr } from './attrs.js';
 import { SVG as TYPE } from './types.js';
-
-export const rotate = n => `rotate(${n})`;
-export const scale = n => `scale(${n})`;
-export const translate = (x, y) => `translate(${x}, ${y})`;
+export { rotate, scale, translate } from './animate.js';
 
 export function createSVGFile(svg, { name = 'image.svg' } = {}) {
 	if (svg instanceof SVGElement) {

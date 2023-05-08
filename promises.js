@@ -1,9 +1,7 @@
 /**
  * @copyright 2023 Chris Zuber <admin@kernvalley.us>
  */
-import { when } from './dom.js';
 import { signalAborted } from './abort.js';
-import { listen, onKeypress } from './events.js';
 export const infinitPromise = new Promise(() => {});
 
 export async function locksSupported() {
@@ -64,22 +62,6 @@ export async function callAsAsync(callback, args = [], { thisArg = globalThis, s
 		});
 	}
 
-	return await promise;
-}
-
-export async function whenKeypress(key, {
-	target = globalThis,
-	type = 'keypress',
-	capture,
-	passive,
-	signal,
-	altKey,
-	ctrlKey,
-	metaKey,
-	shiftKey,
-} = {}) {
-	const { resolve, promise } = getDeferred({ signal });
-	onKeypress(key, resolve, { target, type, capture, once: true, passive, signal, altKey, ctrlKey, metaKey, shiftKey });
 	return await promise;
 }
 
@@ -172,113 +154,4 @@ export async function sleep(timeout, { signal } = {}) {
 	onTimeout(() => resolve(performance.now()), { signal, timeout })
 		.catch(() => resolve(performance.now()));
 	return await promise;
-}
-
-export async function promisifyEvents(targets, { success, fail = 'error', passive = true, capture = true } = {}) {
-	const controller = new AbortController();
-	const opts = { passive, capture, signal: controller.signal, once: true };
-
-	try {
-		const events = [];
-
-		if (typeof success === 'string' || Array.isArray(success) && success.length !== 0) {
-			events.push(when(targets, success, opts));
-		}
-
-		if (typeof fail === 'string' || (Array.isArray(fail) && fail.length !== 0)) {
-			events.push(when(targets, fail, opts).then(event => Promise.reject(event)));
-		}
-
-		const result = await Promise.race(events);
-
-		controller.abort();
-		return result;
-	} catch(err) {
-		controller.abort();
-		throw err;
-	}
-}
-
-export async function *promiseQueue(...promises) {
-	const target = new EventTarget();
-	const queue = new Set(promises);
-	const results = [];
-
-	promises.forEach(prom => prom.then(result => {
-		results.push(result);
-		queue.delete(prom);
-		target.dispatchEvent(new Event('resolve'));
-	}));
-
-	while (queue.size !== 0 || results.length !== 0) {
-		if (results.length === 0) {
-			await resolveOn(target, 'resolve');
-		}
-
-		yield results.shift();
-	}
-}
-
-export async function resolveOn(targets, success, { passive = true, capture = true } = {}) {
-	return await promisifyEvents(targets, { success, fail: null,  passive, capture });
-}
-
-export async function rejectOn(targets, fail, { passive = true, capture = true } = {}) {
-	return await promisifyEvents(targets, { success: null, fail,  passive, capture });
-}
-
-export async function abortablePromise(promise, signal) {
-	return await Promise.race([promise, signalAborted(signal)]);
-}
-
-export async function *eventGenerator(target, event, { signal, capture, passive } = {}) {
-	const { callback, generator } = callbackGenerator();
-	listen(target, event, callback, { signal, capture, passive });
-
-	if (! (signal instanceof AbortSignal)) {
-		for await (const result of generator()) {
-			yield await result;
-		}
-	} else if (signal.aborted) {
-		return;
-	} else {
-		for await (const result of generator({ signal })) {
-			yield await result;
-		}
-	}
-}
-
-export function callbackGenerator() {
-	const target = new EventTarget();
-	const queue = [];
-
-	async function *generator({ signal } = {}) {
-		if (signal instanceof AbortSignal) {
-			while (! signal.aborted) {
-				if (queue.length === 0) {
-					await Promise.race([
-						when(target, 'update', { signal }),
-						signalAborted(signal).catch(() => null).finally(() => null),
-					]).catch(() => null);
-				}
-
-				yield queue.shift();
-			}
-		} else {
-			while (true) {
-				if (queue.length === 0) {
-					await when(target, 'update', { signal });
-				}
-
-				yield queue.shift();
-			}
-		}
-	}
-
-	const callback = (...args) => {
-		queue.push(...args);
-		target.dispatchEvent(new Event('update'));
-	};
-
-	return { callback, generator };
 }
