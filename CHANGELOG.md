@@ -6,29 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [v0.0.1] - 2023-05-07
+### Added
+- GitHub workflow for automating releases
 
-### Initial Release
-
-## [v0.0.2] - 2023-05-07
-
-### Changed
-- Updated README
-
-## [v0.0.3] - 2023-05-17
-
-### Fixed
-- Added missing `icons.js` module
-
-## [v0.0.4] - 2023-05-07
-
-### Fixed
-- Re-add `lock()` in `promises.js` module
-
-## [v0.0.5] - 2023-05-07
-
-### Fixed
-- Use `createElement` instead of `create` in filesystem module
+### Fixes
+- Order of releases in CHANGELOG
 
 ## [v0.0.6] - 2023-05-08
 
@@ -43,3 +25,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - A bunch of bad old code in promises module
+
+## [v0.0.5] - 2023-05-07
+
+### Fixed
+- Use `createElement` instead of `create` in filesystem module
+
+## [v0.0.4] - 2023-05-07
+
+### Fixed
+- Re-add `lock()` in `promises.js` module
+
+## [v0.0.3] - 2023-05-17
+
+### Fixed
+- Added missing `icons.js` module
+
+## [v0.0.2] - 2023-05-07
+
+### Changed
+- Updated README
+
+## [v0.0.1] - 2023-05-07
+
+### Initial Release
