@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.0.9] - 2023-05-14
+
+## Added
+- Import `popup.js` module
+- Import `share-target.js` module
+
 ## [v0.0.8] - 2023-05-14
 
 ### Added
