@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.0.12] - 2023-05-15
+
+### Added
+- Yet more needed modules
+
 ## [v0.0.11] - 2023-05-14
 
 ### Added

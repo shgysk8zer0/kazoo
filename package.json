@@ -1,6 +1,6 @@
 {
   "name": "@shgysk8zer0/kazoo",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "private": false,
   "description": "A JavaScript monorepo for all the things!",
   "main": "index.js",
