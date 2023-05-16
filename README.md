@@ -27,19 +27,63 @@ A JavaScript monorepo for all the things!
 - [Contributing](./.github/CONTRIBUTING.md)
 <!-- - [Security Policy](./.github/SECURITY.md) -->
 
+## Installation
+
+### npm
+
+```bash
+npm i @shgysk8zer0/kazoo
+```
+
+### As a git submodule
+
+```bash
+git submodule add https://github.com/shgysk8zer0/kazoo.git [:path/to/dest]
+```
+
+### Using an [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap)
+
+**Tip**: To use in Rollup and load from unpkg, check out [`@shgysk8zer0/rollup-import`](https://npmjs.org/package/@shgysk8zer0/rollup-import).
+
+#### From unpkg
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "@shgysk8zer0/kazoo/": "https://unpkg.com/@shgysk8zer0/kazoo[@:version]/"
+    }
+  }
+</script>
+```
+
+### From `node_modules/`
+
+**Note**: This requires a correctly set `<base href="/">` to the parent folder.
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "@shgysk8zer0/kazoo/": "./node_modules/@shgysk8zer0/kazoo/"
+    }
+  }
+</script>
+```
+
 ## Example
 
 ```js
-import { createElement } from '/elements.js';
-import { getJSON } from '/http.js';
-import { html } from '/dom.js';
-import { createPolicy } from '/trust.js';
-import { isTrustedScriptOrigin } from '/trust-policies.js';
-import { createYouTubeEmbed } from '/youtube.js';
+import { createElement } from '@shgysk8zer0/kazoo/elements.js';
+import { getJSON } from '@shgysk8zer0/kazoo/http.js';
+import { html } from '@shgysk8zer0/kazoo/dom.js';
+import { createPolicy } from '@shgysk8zer0/kazoo/trust.js';
+import { isTrustedScriptOrigin, createSanitizerCallback } from '@shgysk8zer0/kazoo/trust-policies.js';
+import { createYouTubeEmbed } from '@shgysk8zer0/kazoo/youtube.js';
 
 const sanitizer = new Sanitizer();
-const policy = createPolicy('custom#html', {
-	createHTML: input => sanitizer.sanitizeFor('div', input).innerHTML,
+const policy = createPolicy('default', {
+	createHTML: createSanitizerCallback(),
 	createScript: () => trustedTypes.emptyScript,
 	createScriptURL: input => {
 		if (isTrustedScriptOrigin(input)) {
@@ -55,7 +99,8 @@ document.getElementById('footer').append(
 	createElement('time', { text: new Date().getFullYear().toString() }),
 );
 
-document.getElementById('header').append(createYouTubeEmbed('r-5eu3DpIbc', { width: 560, height: 315 }));
+document.getElementById('header')
+  .append(createYouTubeEmbed('r-5eu3DpIbc', { width: 560, height: 315 }));
 
 getJSON('./api/bacon.json').then(lines => {
 	html('#main', policy.createHTML(lines.map(t => `<p>${t}</p>`).join('')));

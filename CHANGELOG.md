@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `module.js` for resolving module specifiers (e.g. `'@shgysk8zero/kazoo/module.js'`)
 - Implement resolving of module specifiers in loading related things (e.g. `resolveURL`, `createScript`)
 
+### Changed
+- Update README
+
 ## [v0.0.12] - 2023-05-15
 
 ### Added
