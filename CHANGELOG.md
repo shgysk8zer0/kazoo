@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.0.13] - 2023-05-16
+
 ### Added
+- Re-add `md5.js` and `export md5`
 - `module.js` for resolving module specifiers (e.g. `'@shgysk8zero/kazoo/module.js'`)
 - Implement resolving of module specifiers in loading related things (e.g. `resolveURL`, `createScript`)
 

@@ -10,13 +10,8 @@ export const HEX            = 'hex';
 export const BASE_64        = 'base64';
 export const ARRAY_BUFFER   = 'ArrayBuffer';
 export const SRI            = 'sri';
-const        DEFAULT_OUTPUT = HEX;
-
-import { default  as md5Shim } from './md5.js';
-
-export async function md5(str) {
-	return md5Shim(str);
-}
+export { md5 } from './md5.js';
+export const        DEFAULT_OUTPUT = HEX;
 
 export function bufferToHex(buffer) {
 	if (! (buffer instanceof ArrayBuffer)) {
