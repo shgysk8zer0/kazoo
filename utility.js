@@ -4,6 +4,7 @@
 import { randomInt } from './math.js';
 import { isAsyncFunction, getDeferred } from './promises.js';
 import { isScriptURL, isTrustPolicy } from './trust.js';
+import { isBare, resolveModule } from './module.js';
 
 const funcs = new WeakMap();
 
@@ -94,9 +95,13 @@ export async function registerServiceWorker(source, {
 }
 
 export function getURLResolver({ base = document.baseURI, path = './' } = {}) {
-	const url = new URL(path, base);
+	if (isBare(base)) {
+		return getURLResolver({ base: resolveModule(base), path });
+	} else {
+		const url = new URL(path, base);
 
-	return path => new URL(path, url).href;
+		return path => new URL(path, url).href;
+	}
 }
 
 export function isObject(thing) {
