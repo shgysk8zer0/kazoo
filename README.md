@@ -27,6 +27,28 @@ A JavaScript monorepo for all the things!
 - [Contributing](./.github/CONTRIBUTING.md)
 <!-- - [Security Policy](./.github/SECURITY.md) -->
 
+## Browser Support
+
+To avoid bloat and duplication, polyfills **are not** included. However, all polyfills
+for modern browsers may be found in [`@shgysk8zer0/polyfills`](https://github.com/shgysk8zer0/polyfills).
+
+Or, you could just add them as a script (*probably better for caching*)
+
+```html
+<script src="https://unpkg.com/@shgysk8zer0/polyfills@0.0.7/all.min.js" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-6D7++ok/uTOBioRnypzDxJYKgBEgNUmmnNO1ZKJAUyA21GK1vuHmOsoGswvTN157" fetchpriority="high" defer=""></script>
+```
+
+**Required Polyfills** (depending on browser support)
+
+- `AbortSignal` & `AbortController`
+- `trustedTypes`
+- `scheduler`
+- `Sanitizer`
+- `Iterator.range()`
+- Iterator helpers (e.g. `iter.take(5).map().filter()`)
+- New `Map` & `Set` methods
+- `arr.group()`
+
 ## Installation
 
 ### npm
@@ -35,10 +57,22 @@ A JavaScript monorepo for all the things!
 npm i @shgysk8zer0/kazoo
 ```
 
+**And for polyfills**
+
+```bash
+npm i @shgysk8zer0/polyfills
+```
+
 ### As a git submodule
 
 ```bash
 git submodule add https://github.com/shgysk8zer0/kazoo.git [:path/to/dest]
+```
+
+**And for polyfills**
+
+```bash
+git submodule add https://github.com/shgysk8zer0/polyfills.git [:path/to/dest]
 ```
 
 ### Using an [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap)
@@ -51,7 +85,9 @@ git submodule add https://github.com/shgysk8zer0/kazoo.git [:path/to/dest]
 <script type="importmap">
   {
     "imports": {
-      "@shgysk8zer0/kazoo/": "https://unpkg.com/@shgysk8zer0/kazoo[@:version]/"
+      "@shgysk8zer0/kazoo/": "https://unpkg.com/@shgysk8zer0/kazoo[@:version]/",
+      "@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills/all.min.js",
+      "@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills/"
     }
   }
 </script>
@@ -65,7 +101,9 @@ git submodule add https://github.com/shgysk8zer0/kazoo.git [:path/to/dest]
 <script type="importmap">
   {
     "imports": {
-      "@shgysk8zer0/kazoo/": "./node_modules/@shgysk8zer0/kazoo/"
+      "@shgysk8zer0/kazoo/": "./node_modules/@shgysk8zer0/kazoo/",
+      "@shgysk8zer0/polyfills": "./node_modules/@shgysk8zer0/kazoo/all.min.js",
+      "@shgysk8zer0/polyfills/": "./node_modules/@shgysk8zer0/kazoo/polyfills/"
     }
   }
 </script>
@@ -74,6 +112,8 @@ git submodule add https://github.com/shgysk8zer0/kazoo.git [:path/to/dest]
 ## Example
 
 ```js
+import '@shgysk8zer0/polyfills';
+import '@shgysk8zer0/kazoo/harden.js'; // Require `trustedTypes`
 import { createElement } from '@shgysk8zer0/kazoo/elements.js';
 import { getJSON } from '@shgysk8zer0/kazoo/http.js';
 import { html } from '@shgysk8zer0/kazoo/dom.js';
