@@ -9,6 +9,7 @@ import { REFERRER_POLICY } from './defaults.js';
 import { isObject, isNullish, isIterable } from './utility.js';
 import { JS } from './types.js';
 import { isScriptURL, isHTML } from './trust.js';
+import { resolveModule, isBare } from './module.js';
 
 export function copyAs(target, tag, {
 	includeAttributes = true,
@@ -246,6 +247,9 @@ export function createScript(src, {
 	events: { capture, passive, once, signal, ...events } = {},
 	...attrs
 } = {}) {
+	if (isBare(src)) {
+		src = resolveModule(src);
+	}
 	const script = createElement('script', {
 		dataset,
 		events: { capture, passive, once, signal, ...events },
@@ -309,7 +313,9 @@ export function createImage(src, {
 	events: { capture, passive, once, signal, ...events } = {},
 	...attrs
 } = {}) {
-	if (! (src instanceof URL)) {
+	if (isBare(src)) {
+		src = new URL(resolveModule(src));
+	} else if (! (src instanceof URL)) {
 		src = new URL(src, document.baseURI);
 	}
 
@@ -383,6 +389,9 @@ export function createLink(href = null, {
 	events: { capture, passive, once, signal, ...events } = {},
 	...rest
 }) {
+	if (isBare(href)) {
+		href = resolveModule(href);
+	}
 	const link = createElement('link', {
 		dataset, ...rest,
 		events: { capture, passive, once, signal, ...events },

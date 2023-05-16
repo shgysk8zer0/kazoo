@@ -12,9 +12,11 @@ import { open } from '/filesystem.js';
 import { alert } from '/asyncDialog.js';
 import { fileToImage } from '/img-utils.js';
 import { SVG } from '/types.js';
+import '@shgysk8zer0/components/github/user.js';
+import '@shgysk8zer0/components/github/repo.js';
 
 const sanitizer = new Sanitizer();
-const policy = createPolicy('custom#html', {
+const policy = createPolicy('default', {
 	createHTML: input => sanitizer.sanitizeFor('div', input).innerHTML,
 	createScript: () => trustedTypes.emptyScript,
 	createScriptURL: input => {
