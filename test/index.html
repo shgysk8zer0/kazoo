@@ -46,11 +46,19 @@
 		<script type="module" src="./js/index.js" referrerpolicy="no-referrer"></script>
 		<link rel="stylesheet" href="./css/index.css" referrerpolicy="no-referrer" media="all" />
 		<link rel="icon" type="image/svg+xml" sizes="any" href="./favicon.svg" />
+		<link rel="manifest" href="./manifest.json" />
 	</head>
 	<body>
 		<header id="header"></header>
 		<nav id="nav"></nav>
-		<main id="main"></main>
+		<main id="main">
+			<form id="contact">
+				<input type="text" name="subject" id="subject" placeholder="Subject" />
+				<input type="url" name="url" id="url" placeholder="https://example.com" />
+				<textarea name="body" id="body" placeholder="Body of message"></textarea>
+			</form>
+			<div id="bacon"></div>
+		</main>
 		<aside id="sidebar">&copy;</aside>
 		<footer id="footer">
 			<github-user user="shgysk8zer0"></github-user>

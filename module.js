@@ -6,7 +6,8 @@ export const PATH_PREFIXES = ['/', './', '../'];
 export const isString = str => typeof str === 'string';
 export const isURL = str => isString(str) && URL_PREFIXES.some(pre => str.startsWith(pre));
 export const isPath = str => isString(str) && PATH_PREFIXES.some(pre => str.startsWith(pre));
-export const isBare = str => ! (isURL(str) || isPath(str));
+export const isBare = str => isString(str)
+	&& ! [...URL_PREFIXES, ...PATH_PREFIXES].some(pre => str.startsWith(pre));
 
 export function getImportmap() {
 	if (maps.has(document)) {
@@ -24,7 +25,6 @@ export function getImportmap() {
 }
 
 export function resolveModule(specifier, { imports } = getImportmap()) {
-
 	if (cache.has(specifier)) {
 		return cache.get(specifier);
 	} else if (imports.hasOwnProperty(specifier)) {

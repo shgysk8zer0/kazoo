@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.0.14] - 2023-05-17
+
+### Fixed
+- `isBare()` returns true for `URL`s
+
 ## [v0.0.13] - 2023-05-16
 
 ### Added
