@@ -1,0 +1,75 @@
+{
+  "name": "KernValley.US Contact",
+  "short_name": "KRV Contact",
+  "version": "1.1.1",
+  "lang": "en",
+  "dir": "ltr",
+  "description": "Contact page for KernValley.US",
+  "orientation": "any",
+  "start_url": "/",
+  "theme_color": "#008000",
+  "background_color": "#242424",
+  "display": "standalone",
+  "icons": [{
+    "src": "/img/favicon.svg",
+    "sizes": "192x192",
+    "type": "image/svg+xml",
+    "purpose": "any maskable"
+  }, {
+    "src": "/img/icon-192.png",
+    "sizes": "192x192",
+    "type": "image/png",
+    "purpose": "any maskable"
+  }, {
+    "src": "/img/icon-512.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "any maskable"
+  }],
+  "screenshots": [{
+    "src": "https://i.imgur.com/6IabNEi.jpg",
+    "sizes": "1353x667",
+    "type": "image/jpeg"
+  },{
+    "src": "https://i.imgur.com/6IabNEih.jpg",
+    "sizes": "1024x505/",
+    "type": "image/jpeg"
+  }, {
+    "src": "https://i.imgur.com/6IabNEil.jpg",
+    "sizes": "640x316",
+    "type": "image/jpeg"
+  }, {
+    "src": "https://i.imgur.com/6IabNEim.jpg",
+    "sizes": "320x158",
+    "type": "image/jpeg"
+  }],
+  "features": [
+    "Share any site or app, pre-filling subject and body",
+    "Autocompletion of name, phone, and email fields",
+    "Offline loading of page, instant loading when online (submission requires internet)"
+  ],
+  "shortcuts": [],
+  "share_target": {
+    "action": "/test/",
+    "method": "GET",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": {
+      "title": "subject",
+      "text": "body",
+      "url": "url"
+    }
+  },
+  "categories": [
+    "utilities",
+    "business"
+  ],
+  "prefer_related_applications": false,
+  "related_applications": [{
+    "platform": "webapp",
+    "url": "https://contact.kernvalley.us/manifest.json"
+  }],
+  "developer": {
+		"name": "Chris Zuber",
+		"url": "https://kernvalley.us"
+	}
+}

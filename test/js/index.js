@@ -1,17 +1,18 @@
-import { createElement } from '/elements.js';
-import { getJSON } from '/http.js';
-import { html, attr } from '/dom.js';
-import { animate } from '/animate.js';
-import { createPolicy } from '/trust.js';
-import { isTrustedScriptOrigin } from '/trust-policies.js';
-import { createYouTubeEmbed } from '/youtube.js';
-import * as icons from '/icons.js';
-import { whenIntersecting } from '/intersect.js';
-import { isPrime } from '/math.js';
-import { open } from '/filesystem.js';
-import { alert } from '/asyncDialog.js';
-import { fileToImage } from '/img-utils.js';
-import { SVG } from '/types.js';
+import { createElement } from '../../elements.js';
+import { getJSON } from '../../http.js';
+import { html, attr } from '../../dom.js';
+import { animate } from '../../animate.js';
+import { createPolicy } from '../../trust.js';
+import { isTrustedScriptOrigin } from '../../trust-policies.js';
+import { createYouTubeEmbed } from '../../youtube.js';
+import * as icons from '../../icons.js';
+import { whenIntersecting } from '../../intersect.js';
+import { isPrime } from '../../math.js';
+import { open } from '../../filesystem.js';
+import { alert } from '../../asyncDialog.js';
+import { fileToImage } from '../../img-utils.js';
+import { SVG } from '../../types.js';
+import { fillShareTarget } from '../../share-target.js';
 import '@shgysk8zer0/components/github/user.js';
 import '@shgysk8zer0/components/github/repo.js';
 
@@ -28,6 +29,8 @@ const policy = createPolicy('default', {
 	}
 });
 
+fillShareTarget('contact');
+
 requestIdleCallback(() => {
 	const fill = matchMedia('(prefers-color-scheme: dark)').matches ? '#fafafa' : '#242424';
 	const svg = icons.createFileCodeIcon({ size: 64, fill });
@@ -42,7 +45,7 @@ document.getElementById('footer').append(
 );
 
 getJSON('./api/bacon.json').then(async lines => {
-	html('#main', policy.createHTML(lines.map(t =>  `<p onclick="alert(1)">${t}</p>`).join('')));
+	html('#bacon', policy.createHTML(lines.map(t =>  `<p onclick="alert(1)">${t}</p>`).join('')));
 
 	document.getElementById('header').append(...Object.values(icons).map(func => func({ size: 64 })));
 
