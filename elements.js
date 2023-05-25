@@ -4,11 +4,11 @@
 import { data, attr, css, getAttrs, aria as setAria } from './attrs.js';
 import { listen } from './events.js';
 import { getDeferred } from './promises.js';
-import { setProp } from './trust.js';
 import { REFERRER_POLICY } from './defaults.js';
 import { isObject, isNullish, isIterable } from './utility.js';
 import { JS } from './types.js';
-import { isScriptURL, isHTML } from './trust.js';
+import { isScriptURL, isHTML, setProp } from './trust.js';
+import { getJSONScriptPolicy } from './trust-policies.js';
 import { resolveModule, isBare } from './module.js';
 
 export function copyAs(target, tag, {
@@ -282,6 +282,27 @@ export function createScript(src, {
 	}
 
 	setProp(script, 'src', src, { policy });
+
+	return script;
+}
+
+export function createJSONScript(content, {
+	type = 'application/json',
+	policy = getJSONScriptPolicy(),
+	integrity,
+} = {}) {
+	const script = document.createElement('script');
+	script.type = type;
+
+	if (typeof integrity === 'string') {
+		script.integrity = integrity;
+	}
+
+	if (typeof content === 'string') {
+		script.text = policy.createScript(content);
+	} else {
+		script.text = policy.createScript(JSON.stringify(content));
+	}
 
 	return script;
 }

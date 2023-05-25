@@ -163,6 +163,12 @@ export const getDefaultPolicy = callOnce(() => {
 	});
 });
 
+export const getJSONScriptPolicy = callOnce(() => {
+	return createPolicy('json#script', {
+		createScript: input => JSON.stringify(JSON.parse(input)),
+	});
+});
+
 export const getDefaultPolicyWithDisqus = callOnce(() => {
 	const sanitizer = new Sanitizer(Sanitizer.getDefaultConfiguration());
 
