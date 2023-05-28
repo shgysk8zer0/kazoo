@@ -1,9 +1,8 @@
 {
   "name": "@shgysk8zer0/kazoo",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "private": false,
   "description": "A JavaScript monorepo for all the things!",
-  "main": "index.js",
   "config": {
     "serve": {
       "domain": "localhost",

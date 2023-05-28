@@ -47,7 +47,8 @@ document.getElementById('footer').append(
 getJSON('./api/bacon.json').then(async lines => {
 	html('#bacon', policy.createHTML(lines.map(t =>  `<p onclick="alert(1)">${t}</p>`).join('')));
 
-	document.getElementById('header').append(...Object.values(icons).map(func => func({ size: 64 })));
+	document.getElementById('header')
+		.append(...Object.entries(icons).map(([ariaLabel, func]) => func({ size: 64, ariaLabel })));
 
 	const list = createElement('ol', {
 		children: Iterator.range(0, Infinity)
