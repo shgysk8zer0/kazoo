@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.0.16] - 2023-05-28
+
+### Fixed
+- `<svg>` child elements no longer have default `role` attribute
+- Package no longer has a `main`
+
 ## [v0.0.15] - 2023-05-28
 
 ### Added

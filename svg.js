@@ -20,7 +20,7 @@ export function createSVGFile(svg, { name = 'image.svg' } = {}) {
 
 export function createSVGElement (tag, {
 	fill, stroke, width, height, pathLength, children = [], id, classList = [],
-	styles, dataset, role = DEFAULT_ROLE, ariaLabel,
+	styles, dataset, role, ariaLabel,
 	events: {
 		capture,
 		passive,
@@ -123,9 +123,9 @@ export function createSVG({
 	viewBox = null,
 	height = null,
 	width = null,
-	label = null,
 	slot = null,
 	role = DEFAULT_ROLE,
+	ariaLabel,
 	hidden = false,
 	classList = [],
 	children = [],
@@ -144,8 +144,8 @@ export function createSVG({
 		svg.setAttributeNS(null, 'viewBox', viewBox.map(n => n.toString()).join(' '));
 	}
 
-	if (typeof label === 'string') {
-		svg.setAttribute('aria-label', label);
+	if (typeof ariaLabel === 'string') {
+		svg.setAttribute('aria-label', ariaLabel);
 	}
 
 	if (hidden === true) {
