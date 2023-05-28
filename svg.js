@@ -5,7 +5,10 @@ import { SVG, XLINK } from './namespaces.js';
 import { isObject } from './utility.js';
 import { css, data, attr } from './attrs.js';
 import { SVG as TYPE } from './types.js';
+
 export { rotate, scale, translate } from './animate.js';
+
+export const DEFAULT_ROLE = 'presentation';
 
 export function createSVGFile(svg, { name = 'image.svg' } = {}) {
 	if (svg instanceof SVGElement) {
@@ -17,7 +20,7 @@ export function createSVGFile(svg, { name = 'image.svg' } = {}) {
 
 export function createSVGElement (tag, {
 	fill, stroke, width, height, pathLength, children = [], id, classList = [],
-	styles, dataset,
+	styles, dataset, role = DEFAULT_ROLE, ariaLabel,
 	events: {
 		capture,
 		passive,
@@ -46,6 +49,14 @@ export function createSVGElement (tag, {
 		el.id = id;
 	}
 	
+	if (typeof role === 'string') {
+		el.setAttribute('role', role);
+	}
+
+	if (typeof ariaLabel === 'string') {
+		el.setAttribute('aria-label', ariaLabel);
+	}
+
 	if (Array.isArray(classList) && classList.length !== 0) {
 		el.classList.add(...classList);
 	}
@@ -114,7 +125,7 @@ export function createSVG({
 	width = null,
 	label = null,
 	slot = null,
-	role = 'img',
+	role = DEFAULT_ROLE,
 	hidden = false,
 	classList = [],
 	children = [],

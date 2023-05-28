@@ -6,8 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.0.15] - 2023-05-28
+
 ### Added
+- Add Trust Policy for creating JSON `<script>`s
+- Add `strip#html`, `escape#html`, and `json#script` trust policies
 - `createCalendarIcon()` & `createClockIcon()` in `icons.js` module
+
+### Changed
+- Prefer `el.setHTML()` instead of `sanitizer.sanitizeFor()` in sanitizer trust policies
+
+### Removed
+- Delete `viewport.js`
 
 ## [v0.0.14] - 2023-05-17
 
