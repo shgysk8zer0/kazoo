@@ -8,6 +8,14 @@ const {
 	dropElements,
 } = Sanitizer.getDefaultConfiguration();
 
+/*
+ * Do NOT export this! It is dangerous and MUST only be used internally.
+ * But it still needs to be added to `trusted-types` in CSP if used.
+ */
+const getRawHTMLPolicy = callOnce(() => {
+	return createPolicy('trust-raw#html', { createHTML: input => input });
+});
+
 export const trustedOrigins = [
 	location.origin,
 	'https://cdn.kernvalley.us',
@@ -24,10 +32,7 @@ export const youtubeEmbedOrigins = [
 	'https://www.youtube-nocookie.com',
 ];
 
-export const youtubeEmbeds = [
-	'https://www.youtube.com/embed/',
-	'https://www.youtube-nocookie.com/embed/',
-];
+export const youtubeEmbeds = youtubeEmbedOrigins.map(origin => `${origin}/embed/`);
 
 export function isTrustedScriptOrigin(input) {
 	const { origin } = new URL(input, document.baseURI);
@@ -44,26 +49,38 @@ export function isYouTubeEmbed(input) {
 	return youtubeEmbedOrigins.includes(origin) && pathname.startsWith('/embed/');
 }
 
+export function escapeHTML(input) {
+	const el = document.createElement('div');
+	el.textContent = input;
+	return el.innerHTML;
+}
+
+export function stripHTML(input) {
+	const tmp = document.createElement('template');
+	const policy = getRawHTMLPolicy();
+	tmp.innerHTML = policy.createHTML(`<div>${input}</div>`);
+	return tmp.content.firstElementChild.textContent;
+}
+
+export function sanitizeHTML(input, { sanitizer = new Sanitizer() } = {}) {
+	if (Element.prototype.setHTML instanceof Function) {
+		const el = document.createElement('div');
+		el.setHTML(input, { sanitizer });
+		return el.innerHTML;
+	} else if (Sanitizer.prototype.sanitizeFor instanceof Function) {
+		return sanitizer.sanitizeFor('div', input).innerHTML;
+	} else {
+		console.warn('Sanitizer not supported. Returning escaped HTML');
+		return escapeHTML(input);
+	}
+}
+
 export function isDisqusEmbedScript(input) {
 	return /^https:\/\/[\w-]+\.disqus\.com\/embed\.js$/.test(input);
 }
 
 export function isDisqusEmbed(input) {
 	return input.startsWith('https://disqus.com/embed/comments/');
-}
-
-function createSanitizerCallback(sanitizer = new Sanitizer(Sanitizer.getDefaultConfiguration())) {
-	if (Sanitizer.prototype.sanitizeFor instanceof Function) {
-		return input => sanitizer.sanitizeFor('div', input).innerHTML;
-	} else if (Element.prototype.setHTML instanceof Function) {
-		return input => {
-			const el = document.createElement('div');
-			el.setHTML(input, { sanitizer });
-			return el.innerHTML;
-		};
-	} else {
-		return input => input;
-	}
 }
 
 export const createEmptyHTML = () => trustedTypes.emptyHTML;
@@ -148,10 +165,10 @@ export const sanitizerConfig = {
 };
 
 export const getDefaultPolicy = callOnce(() => {
-	const sanitizer = new Sanitizer(sanitizerConfig);
+	const sanitizer = new Sanitizer();
 
 	return createPolicy('default', {
-		createHTML: createSanitizerCallback(sanitizer),
+		createHTML: input => sanitizeHTML(input, { sanitizer }),
 		createScript: createEmptyScript,
 		createScriptURL: input => {
 			if (isTrustedScriptOrigin(input)) {
@@ -161,6 +178,18 @@ export const getDefaultPolicy = callOnce(() => {
 			}
 		}
 	});
+});
+
+/**
+ * Instead of using this policy and setting `innerHTML`, you would do better
+ * to set `textContent` instead.
+ */
+export const getEscapeHTMLPolicy = callOnce(() => {
+	return createPolicy('escape#html', { createHTML: escapeHTML });
+});
+
+export const getStripHTMLPolicy = callOnce(() => {
+	return createPolicy('strip#html', { createHTML: stripHTML });
 });
 
 export const getJSONScriptPolicy = callOnce(() => {
@@ -173,7 +202,7 @@ export const getDefaultPolicyWithDisqus = callOnce(() => {
 	const sanitizer = new Sanitizer(Sanitizer.getDefaultConfiguration());
 
 	return createPolicy('default', {
-		createHTML: createSanitizerCallback(sanitizer),
+		createHTML: input => sanitizeHTML(input, { sanitizer }),
 		createScript: createEmptyScript,
 		createScriptURL: input => {
 			if (isTrustedScriptOrigin(input) || isDisqusEmbed(input)) {
@@ -189,7 +218,7 @@ export const getKRVPolicy = callOnce(() => {
 	const sanitizer = new Sanitizer(sanitizerConfig);
 
 	return createPolicy('krv', {
-		createHTML: createSanitizerCallback(sanitizer),
+		createHTML: input => sanitizeHTML(input, { sanitizer }),
 		createScript: createEmptyScript,
 		createScriptURL: input => {
 			if (isTrustedScriptOrigin(input)) {
