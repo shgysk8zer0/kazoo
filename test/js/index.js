@@ -1,24 +1,29 @@
 import { createElement } from '../../elements.js';
-import { getJSON } from '../../http.js';
-import { html, attr } from '../../dom.js';
+import { getJSON, getHTML } from '../../http.js';
+import { html, attr, each } from '../../dom.js';
 import { animate } from '../../animate.js';
 import { createPolicy } from '../../trust.js';
 import { isTrustedScriptOrigin } from '../../trust-policies.js';
 import { createYouTubeEmbed } from '../../youtube.js';
+import { createSVGFile } from '../../svg.js';
 import * as icons from '../../icons.js';
 import { whenIntersecting } from '../../intersect.js';
 import { isPrime } from '../../math.js';
 import { open } from '../../filesystem.js';
 import { alert } from '../../asyncDialog.js';
 import { fileToImage } from '../../img-utils.js';
-import { SVG } from '../../types.js';
-import { fillShareTarget } from '../../share-target.js';
+import { btnStyles } from './styles.js';
+// import { fillShareTarget } from '../../share-target.js';
+import { addStyle } from '@shgysk8zer0/jswaggersheets';
 import '@shgysk8zer0/components/github/user.js';
 import '@shgysk8zer0/components/github/repo.js';
 
-const sanitizer = new Sanitizer();
 const policy = createPolicy('default', {
-	createHTML: input => sanitizer.sanitizeFor('div', input).innerHTML,
+	createHTML: input => {
+		const el = document.createElement('div');
+		el.setHTML(input);
+		return el.innerHTML;
+	},
 	createScript: () => trustedTypes.emptyScript,
 	createScriptURL: input => {
 		if (isTrustedScriptOrigin(input)) {
@@ -29,12 +34,18 @@ const policy = createPolicy('default', {
 	}
 });
 
-fillShareTarget('contact');
+addStyle(document, btnStyles);
+
+each('[data-template]', el =>
+	whenIntersecting(el)
+		.then(() => getHTML(el.dataset.template))
+		.then(tmp => el.replaceChildren(tmp))
+);
 
 requestIdleCallback(() => {
 	const fill = matchMedia('(prefers-color-scheme: dark)').matches ? '#fafafa' : '#242424';
 	const svg = icons.createFileCodeIcon({ size: 64, fill });
-	const file = new File([svg.outerHTML], 'icon.svg', { type: SVG });
+	const file = createSVGFile(svg, 'icon.svg');
 	const href = URL.createObjectURL(file);
 	attr('link[rel="icon"]', { href });
 });
@@ -45,7 +56,7 @@ document.getElementById('footer').append(
 );
 
 getJSON('./api/bacon.json').then(async lines => {
-	html('#bacon', policy.createHTML(lines.map(t =>  `<p onclick="alert(1)">${t}</p>`).join('')));
+	html('#bacon', policy.createHTML(lines.map(t => `<p onclick="alert(1)">${t}</p>`).join('')));
 
 	document.getElementById('header')
 		.append(...Object.entries(icons).map(([ariaLabel, func]) => func({ size: 64, ariaLabel })));
@@ -68,17 +79,20 @@ getJSON('./api/bacon.json').then(async lines => {
 				click: ({ target }) => {
 					const dialog = createElement('dialog', {
 						events: { close: ({ target }) => target.remove() },
-						children: [
-							createYouTubeEmbed(target.dataset.video, { width: 560, height: 315 }),
-							document.createElement('br'),
-							createElement('button', {
-								type: 'button',
-								classList: ['btn', 'btn-reject'],
-								text: 'Close',
-								events: { click: ({ target }) => target.closest('dialog').close() },
-							})
-						]
 					});
+					const shadow = dialog.attachShadow({ mode: 'closed' });
+					addStyle(shadow, btnStyles);
+
+					shadow.append(
+						createYouTubeEmbed(target.dataset.video, { width: 560, height: 315 }),
+						document.createElement('br'),
+						createElement('button', {
+							type: 'button',
+							classList: ['btn', 'btn-reject'],
+							text: 'Close',
+							events: { click: ({ target }) => target.closest('dialog').close() },
+						})
+					);
 
 					document.body.append(dialog);
 					dialog.showModal();
@@ -144,3 +158,4 @@ getJSON('./api/bacon.json').then(async lines => {
 	await whenIntersecting('#footer');
 	alert('The End!');
 });
+

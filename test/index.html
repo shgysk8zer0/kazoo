@@ -9,8 +9,8 @@
 			base-uri 'self';
 			manifest-src 'self';
 			prefetch-src 'self';
-			script-src 'self' unpkg.com/ 'nonce-3b58877b-25c3-4af2-975f-76607bd7c78e';
-			style-src 'self' unpkg.com;
+			script-src 'self' https://unpkg.com/@shgysk8zer0/ https://unpkg.com/leaflet@1.9.3/ 'nonce-3b58877b-25c3-4af2-975f-76607bd7c78e';
+			style-src 'self' https://unpkg.com/@shgysk8zer0/ https://unpkg.com/leaflet@1.9.3/ blob:;
 			font-src cdn.kernvalley.us;
 			form-action 'none';
 			frame-src https://www.youtube-nocookie.com/embed/;
@@ -19,7 +19,7 @@
 			child-src 'self';
 			worker-src 'self';
 			frame-ancestors 'none';
-			connect-src 'self' unpkg.com/@shgysk8zer0/ cdn.kernvalley.us api.github.com/users/ api.github.com/repos/ api.pwnedpasswords.com/range/ maps.kernvalley.us/places/ events.kernvalley.us/events.json;
+			connect-src 'self' https://unpkg.com/@shgysk8zer0/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json;
 			img-src * data: blob:;
 			require-trusted-types-for 'script';
 			trusted-types empty#html empty#script default sanitizer-raw#html youtube#embed github-user#html github-repo#html;
@@ -30,18 +30,19 @@
 		<script type="importmap" nonce="3b58877b-25c3-4af2-975f-76607bd7c78e">
 			{
 				"imports": {
-					"@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills@0.0.7/all.min.js",
-					"@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills@0.0.7/",
-					"@shgysk8zer0/components/": "https://unpkg.com/@shgysk8zer0/components@0.0.8/",
-					"@shgysk8zer0/konami": "https://unpkg.com/@shgysk8zer0/konami@1.0.9/konami.js",
-					"@shgysk8zer0/kazoo/": "../",
+					"@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills@0.1.2/all.min.js",
+					"@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills@0.1.2/",
+					"@shgysk8zer0/components/": "https://unpkg.com/@shgysk8zer0/components@0.0.9/",
+					"@shgysk8zer0/konami": "https://unpkg.com/@shgysk8zer0/konami@1.1.1/konami.js",
+					"@shgysk8zer0/jswaggersheets": "https://unpkg.com/@shgysk8zer0/jswaggersheets/swagger.js",
 					"@shgysk8zer0/http-status": "https://unpkg.com/@shgysk8zer0/http-status@1.0.1/http-status.js",
+					"@shgysk8zer0/kazoo/": "../",
 					"leaflet": "https://unpkg.com/leaflet@1.9.3/dist/leaflet-src.esm.js",
 					"firebase/": "https://www.gstatic.com/firebasejs/9.16.0/"
 				}
 			}
 		</script>
-		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-6D7++ok/uTOBioRnypzDxJYKgBEgNUmmnNO1ZKJAUyA21GK1vuHmOsoGswvTN157" src="https://unpkg.com/@shgysk8zer0/polyfills@0.0.7/all.min.js" fetchpriority="auto"></script>
+		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-8s5Tj7IrKDs3va2EJ3QsRxxApN9vT+thnbA8imc6bwYJA2JaAddVR5b8q5wDkrdv" src="https://unpkg.com/@shgysk8zer0/polyfills@0.1.2/all.min.js" fetchpriority="high"></script>
 		<script src="/harden.js" referrerpolicy="no-referrer" defer=""></script>
 		<script type="module" src="./js/index.js" referrerpolicy="no-referrer"></script>
 		<link rel="stylesheet" href="./css/index.css" referrerpolicy="no-referrer" media="all" />
@@ -52,6 +53,7 @@
 		<header id="header"></header>
 		<nav id="nav"></nav>
 		<main id="main">
+			<div data-template="./lorem.html"></div>
 			<form id="contact">
 				<input type="text" name="subject" id="subject" placeholder="Subject" />
 				<input type="url" name="url" id="url" placeholder="https://example.com" />

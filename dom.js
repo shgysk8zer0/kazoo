@@ -6,7 +6,7 @@ import { addListener, listen } from './events.js';
 import { getDeferred, isAsync } from './promises.js';
 import { isHTML, isTrustPolicy } from './trust.js';
 import { HTML } from './types.js';
-import { errorToEvent, callOnce, isNullish, isIterable } from './utility.js';
+import { errorToEvent, callOnce, isIterable } from './utility.js';
 import { data as setData, css as setCss, attr as setAttr, aria as setAria } from './attrs.js';
 
 export const readyStates = ['loading', 'interactive', 'complete'];
@@ -223,15 +223,35 @@ export function text(what, text, { base } = {}) {
 export function html(what, text, {
 	base,
 	sanitizer,
-	policy = 'trustedTypes' in globalThis ? globalThis.trustedTypes.defaultPolicy : undefined,
+	policy = 'trustedTypes' in globalThis ? globalThis.trustedTypes.defaultPolicy : null,
+	allowElements,
+	allowComments,
+	allowAttributes,
+	allowCustomElements,
+	blockElements,
+	dropAttributes,
+	dropElements,
+	allowUnknownMarkup,
 } = {}) {
-	if (typeof sanitizer !== 'undefined' && Element.prototype.setHTML instanceof Function) {
-		return each(what, el => el.setHTML(text, { sanitizer }), { base });
+	if (
+		Element.prototype.setHTML instanceof Function
+		&& typeof allowAttributes !== 'undefined'
+		&& typeof allowElements !== 'undefined'
+	) {
+		const tmp = document.createElement('div');
+		tmp.setHTML({
+			allowComments, allowAttributes, allowCustomElements, blockElements,
+			dropAttributes, dropElements, allowUnknownMarkup,
+		});
+		return each(what, el => el.append(...tmp.cloneNode(true).children), { base });
+	} else if (typeof sanitizer !== 'undefined' && Element.prototype.setHTML instanceof Function) {
+		const tmp = tmp.setHTML(text, { sanitizer });
+		return each(what, el => el.append(...tmp.cloneNode(true).children), { base });
 	} else if (isHTML(text)) {
 		return each(what, el => el.innerHTML = text, { base });
-	} else if (! isNullish(policy) && policy.createHTML instanceof Function) {
-		text = policy.createHTML(text);
-		return each(what, el => el.innerHTML = text, { base });
+	} else if (isTrustPolicy(policy) && policy.createHTML instanceof Function) {
+		const created = policy.createHTML(text);
+		return each(what, el => el.innerHTML = created, { base });
 	} else {
 		return each(what, el => el.innerHTML = text, { base });
 	}
@@ -436,12 +456,16 @@ export async function whenPageHidden({ signal } = {}) {
 	return promise;
 }
 
+/**
+ * @deprecated
+ */
 export function parse(text, {
 	type = HTML,
 	asFrag = true,
 	sanitizer,
 	policy = 'trustedTypes' in globalThis ? globalThis.trustedTypes.defaultPolicy : undefined,
 } = {}) {
+	console.warn('`parse()` is deprecated. Please update to using `Document.parse()`.');
 	const parser = new DOMParser();
 
 	if (asFrag) {
@@ -453,7 +477,11 @@ export function parse(text, {
 	}
 }
 
+/**
+ * @deprecated
+ */
 export function documentToFragment(doc, { sanitizer } = {}) {
+	console.warn('`documentToFragment()` is deprecated.');
 	const clone = doc.cloneNode(true);
 	const frag = document.createDocumentFragment();
 	frag.append(...clone.head.childNodes, ...clone.body.childNodes);
@@ -462,10 +490,14 @@ export function documentToFragment(doc, { sanitizer } = {}) {
 		? sanitizer.sanitize(frag) : frag;
 }
 
+/**
+ * @deprecated
+ */
 export function parseAsFragment(text, {
 	sanitizer,
 	policy = 'trustedTypes' in globalThis ? globalThis.trustedTypes.defaultPolicy : undefined,
 } = {}) {
+	console.warn('`parseAsFragment()` is deprecated.');
 	const tmp = document.createElement('template');
 
 	if (isTrustPolicy(policy) && ! isHTML(text)) {

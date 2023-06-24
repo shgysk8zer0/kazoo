@@ -75,6 +75,14 @@ export function createElement(tag, {
 	html                      = undefined,
 	policy                    = 'trustedTypes' in globalThis ? globalThis.trustedTypes.defaultPolicy : null,
 	sanitizer                 = undefined,
+	allowElements,
+	allowComments,
+	allowAttributes,
+	allowCustomElements,
+	blockElements,
+	dropAttributes,
+	dropElements,
+	allowUnknownMarkup,
 	aria                      = undefined,
 	events: { capture, passive, once, signal, ...events } = {},
 	animation: {
@@ -139,11 +147,17 @@ export function createElement(tag, {
 			el.textContent = text;
 		} else if (typeof html === 'string' || isHTML(html)) {
 			if (
-				'Sanitizer' in globalThis
-				&& sanitizer instanceof globalThis.Sanitizer
-				&& Element.prototype.setHTML instanceof Function
+				Element.prototype.setHTML instanceof Function
+				&& (
+					(typeof allowElements !== 'undefined' && typeof allowAttributes !== 'undefined')
+					|| ('Sanitizer' in globalThis && sanitizer instanceof globalThis.Sanitizer)
+				)
 			) {
-				el.setHTML(html, { sanitizer });
+				el.setHTML(html, {
+					allowElements, allowComments, allowAttributes,
+					allowCustomElements, blockElements, dropAttributes, dropElements,
+					allowUnknownMarkup, sanitizer,
+				});
 			} else {
 				setProp(el, 'innerHTML', html, { policy });
 			}
@@ -218,13 +232,12 @@ export function createSlot(name, {
 	text      = undefined,
 	html      = undefined,
 	policy    = undefined,
-	sanitizer = undefined,
 	events: { capture, passive, once, signal, ...events } = {},
-	...attrs
+	...rest
 } = {}) {
 	const slot = createElement('slot', {
 		id, classList, hidden, dataset, children, styles, text, html, policy,
-		sanitizer, events: { capture, passive, once, signal, ...events }, ...attrs,
+		events: { capture, passive, once, signal, ...events }, ...rest,
 	});
 
 	slot.name = name;
