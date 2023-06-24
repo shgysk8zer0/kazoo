@@ -3,6 +3,7 @@
  */
 import { createPolicy } from './trust.js';
 import { callOnce } from './utility.js';
+// @todo Remove use of `Sanitizer.getDefaultConfiguration()`
 const {
 	allowElements, allowAttributes, allowComments, blockElements, dropAttributes,
 	dropElements,
@@ -62,12 +63,22 @@ export function stripHTML(input) {
 	return tmp.content.firstElementChild.textContent;
 }
 
-export function sanitizeHTML(input, { sanitizer = new Sanitizer() } = {}) {
+export function sanitizeHTML(input, {
+	allowElements, allowComments, allowAttributes, allowCustomElements,
+	blockElements, dropAttributes, dropElements, allowUnknownMarkup, sanitizer,
+} = {}) {
 	if (Element.prototype.setHTML instanceof Function) {
 		const el = document.createElement('div');
-		el.setHTML(input, { sanitizer });
+		el.setHTML(input, {
+			allowElements, allowComments, allowAttributes, allowCustomElements,
+			blockElements, dropAttributes, dropElements, allowUnknownMarkup, sanitizer,
+		});
 		return el.innerHTML;
-	} else if (Sanitizer.prototype.sanitizeFor instanceof Function) {
+	} else if (
+		'Sanitizer' in globalThis
+		&& Sanitizer.prototype.sanitizeFor instanceof Function
+		&& typeof sanitizer === 'object' && sanitizer instanceof Sanitizer
+	) {
 		return sanitizer.sanitizeFor('div', input).innerHTML;
 	} else {
 		console.warn('Sanitizer not supported. Returning escaped HTML');
@@ -165,10 +176,11 @@ export const sanitizerConfig = {
 };
 
 export const getDefaultPolicy = callOnce(() => {
-	const sanitizer = new Sanitizer();
-
 	return createPolicy('default', {
-		createHTML: input => sanitizeHTML(input, { sanitizer }),
+		createHTML: input => sanitizeHTML(input, {
+			allowElements, allowAttributes, allowComments, blockElements,
+			dropAttributes, dropElements,
+		}),
 		createScript: createEmptyScript,
 		createScriptURL: input => {
 			if (isTrustedScriptOrigin(input)) {
@@ -199,10 +211,11 @@ export const getJSONScriptPolicy = callOnce(() => {
 });
 
 export const getDefaultPolicyWithDisqus = callOnce(() => {
-	const sanitizer = new Sanitizer(Sanitizer.getDefaultConfiguration());
-
 	return createPolicy('default', {
-		createHTML: input => sanitizeHTML(input, { sanitizer }),
+		createHTML: input => sanitizeHTML(input, {
+			allowElements, allowAttributes, allowComments, blockElements, dropAttributes,
+			dropElements,
+		}),
 		createScript: createEmptyScript,
 		createScriptURL: input => {
 			if (isTrustedScriptOrigin(input) || isDisqusEmbed(input)) {
@@ -215,10 +228,11 @@ export const getDefaultPolicyWithDisqus = callOnce(() => {
 });
 
 export const getKRVPolicy = callOnce(() => {
-	const sanitizer = new Sanitizer(sanitizerConfig);
-
 	return createPolicy('krv', {
-		createHTML: input => sanitizeHTML(input, { sanitizer }),
+		createHTML: input => sanitizeHTML(input, {
+			allowElements, allowAttributes, allowComments, blockElements, dropAttributes,
+			dropElements,
+		}),
 		createScript: createEmptyScript,
 		createScriptURL: input => {
 			if (isTrustedScriptOrigin(input)) {

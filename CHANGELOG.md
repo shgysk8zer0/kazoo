@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.0.17] - 2023-06-23
+
 ### Added
 - Add `@shgysk8zer0/js-utils`
 
@@ -14,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Update GitHub Release Action with correct permissions
+
+### Changed
+- All sanitizer-related functions now accept config as well as sanitizer dict
+- Switch to using `el.setHTML()` & `Document.parseHTML()`
+
+### Deprecated
+- Sanitizer is deprecated and has been effectively removed from the spec
 
 ## [v0.0.16] - 2023-05-28
 

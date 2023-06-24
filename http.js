@@ -229,9 +229,15 @@ export async function getHTML(url, {
 	keepalive = undefined,
 	signal = undefined,
 	timeout = null,
-	head = true,
-	asFrag = true,
 	sanitizer = undefined,
+	allowElements,
+	allowComments,
+	allowAttributes,
+	allowCustomElements,
+	blockElements,
+	dropAttributes,
+	dropElements,
+	allowUnknownMarkup,
 	policy,
 	errorMessage,
 } = {}) {
@@ -239,9 +245,18 @@ export async function getHTML(url, {
 		cache, redirect, priority, integrity, keepalive, signal, timeout, errorMessage });
 
 	if (isTrustPolicy(policy)) {
-		return parse(policy.createHTML(html), { asFrag, head });
+		const doc = new DOMParser().parseFromString(policy.createHTML(html), TYPES.HTML);
+		const frag = document.createDocumentFragment();
+		frag.append(...doc.head.children, ...doc.body.children);
+		return frag;
 	} else {
-		return parse(html, { head, asFrag, sanitizer, policy });
+		const frag = document.createDocumentFragment();
+		const doc = Document.parseHTML(html, {
+			sanitizer, allowElements, allowComments, allowAttributes, allowCustomElements,
+			blockElements, dropAttributes, dropElements, allowUnknownMarkup,
+		});
+		frag.append(...doc.head.children, ...doc.body.children);
+		return frag;
 	}
 }
 

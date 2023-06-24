@@ -1,7 +1,9 @@
 /**
  * @copyright 2023 Chris Zuber <admin@kernvalley.us>
  */
-export const supported = window.customElements instanceof Object;
+import { HTML } from './types.js';
+
+export const supported = globalThis.customElements instanceof Object;
 
 export function isDefined(...tags) {
 	return supported && tags.every(tag => typeof customElements.get(tag) !== 'undefined');
@@ -22,16 +24,17 @@ export function registerCustomElement(tag, cls, ...rest) {
 }
 
 export async function getCustomElement(tag) {
+	console.warn('`getCustomElement()` is deprecated. Use `customElements.whenDefined() instead.');
+
 	if (supported) {
-		await customElements.whenDefined(tag);
-		return customElements.get(tag);
+		return customElements.whenDefined(tag);
 	} else {
 		throw new Error('`customElements` not supported');
 	}
 }
 
 export async function createCustomElement(tag, ...args) {
-	const Pro = await getCustomElement(tag);
+	const Pro = await customElements.whenDefined(tag);
 	return new Pro(...args);
 }
 
@@ -46,4 +49,31 @@ export async function whenDefined(...els) {
 export async function defined(...els) {
 	console.error('`defined()` is deprecated. Please use `whenDefined()` instead');
 	await whenDefined(...els);
+}
+
+export async function getTemplate(src, opts, {
+	mode = 'cors',
+	cache = 'default',
+	credentials = 'omit',
+	redirect = 'follow',
+	priority = 'auto',
+	referrerPolicy = 'no-referrer',
+	headers = new Headers({ Accept: HTML }),
+	integrity = undefined,
+	keepalive = undefined,
+	signal = undefined,
+} = {}) {
+	const resp = await fetch(src, {
+		mode, cache, credentials, redirect, priority, referrerPolicy, headers,
+		integrity, keepalive, signal,
+	});
+
+	if (resp.ok) {
+		const doc = Document.parseHTML(await resp.text(), opts);
+		const frag = document.createDocumentFragment();
+		frag.append(...doc.head.children, ...doc.body.children);
+		return frag;
+	} else {
+		throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);
+	}
 }
