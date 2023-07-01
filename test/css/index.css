@@ -54,3 +54,8 @@ dialog::backdrop {
 	background-color: rgba(0, 0, 0, 0.7);
 	backdrop-filter: blur(3px);
 }
+
+pre, code, table, tr, thead, tfoot, img {
+	max-width: 100%;
+	overflow: auto;
+}

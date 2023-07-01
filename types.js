@@ -13,5 +13,6 @@ export const PNG = 'image/png';
 export const GIF = 'image/gif';
 export const WEBP = 'image/webp';
 export const SVG = 'image/svg+xml';
+export const MARKDOWN = 'text/markdown';
 export const FORM_URL_ENCODED = 'application/x-www-form-urlencoded';
 export const FORM_MULTIPART = 'multipart/form-data';

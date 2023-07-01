@@ -162,7 +162,18 @@ export async function loadScript(src, {
 	return await promise;
 }
 
-export async function loadStylesheet(href, {
+/**
+ * @Deprecated
+ */
+export async function loadStylesheet(...args) {
+	if (location.hostname === 'localhost' || location.hostname.endsWith('.live')) {
+		console.warn('`loadStylesheet()` is deprecated and has been renamed to `loadStyleSheet()`.');
+	}
+
+	return loadStyleSheet(...args);
+}
+
+export async function loadStyleSheet(href, {
 	rel = 'stylesheet',
 	media = 'all',
 	blocking = null,
