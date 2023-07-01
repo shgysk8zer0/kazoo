@@ -3,11 +3,38 @@
  */
 import { createPolicy } from './trust.js';
 import { callOnce } from './utility.js';
+import { HTML } from './types.js';
 // @todo Remove use of `Sanitizer.getDefaultConfiguration()`
 const {
 	allowElements, allowAttributes, allowComments, blockElements, dropAttributes,
 	dropElements,
 } = Sanitizer.getDefaultConfiguration();
+
+const unsafeElements = [
+	'script', 'title', 'noscript', 'object', 'embed', 'style', 'param', 'iframe',
+	'base', 'frame', 'frameset',
+];
+
+const unsafeAttrs = [
+	'ping', 'action', 'formaction', 'http-equiv', 'background', 'style', 'bgcolor',
+	'fgcolor', 'linkcolor', 'lowsrc', ...Object.keys(
+		Object.getOwnPropertyDescriptors(HTMLElement.prototype)
+	).filter(desc => desc.startsWith('on')),
+];
+
+const urlAttrs = ['href', 'src', 'cite'];
+const allowedProtocols = location.protocol === 'http:' ? ['http:', 'https:'] : ['https:'];
+
+function isUnsafeURL(attr, node) {
+	const val = node.getAttribute(attr);
+	return (
+		typeof val === 'string'
+		&& val.length !== 0
+		&& urlAttrs.includes(attr)
+		&& URL.canParse(val, document.baseURI)
+		&& ! allowedProtocols.includes(new URL(val, document.baseURI).protocol)
+	);
+}
 
 /*
  * Do NOT export this! It is dangerous and MUST only be used internally.
@@ -275,5 +302,45 @@ export const getDisqusPolicy = callOnce(() => createPolicy('disqus#script-url', 
 		}
 	}
 }));
+
+export function isSafeHTML(content) {
+	try {
+		const policy = getRawHTMLPolicy();
+		const parsed = content instanceof Node
+			? content
+			: new DOMParser().parseFromString(policy.createHTML(content), HTML);
+
+		const iter = document.createNodeIterator(parsed, NodeFilter.SHOW_ELEMENT);
+
+		let safe = true;
+		let node = iter.nextNode();
+
+		while (node instanceof Node) {
+			if (node.nodeType === Node.ELEMENT_NODE) {
+				if (unsafeElements.includes(node.localName.toLowerCase())) {
+					safe = false;
+					break;
+				} else if (node.getAttributeNames().some(attr => {
+					return unsafeAttrs.includes(attr.toLowerCase()) || isUnsafeURL(attr, node);
+				})) {
+					safe = false;
+					break;
+				} else if (node.tagName === 'TEMPLATE' && ! isSafeHTML(node.content)) {
+					safe = false;
+					break;
+				} else {
+					node = iter.nextNode();
+				}
+			} else {
+				safe = false;
+				break;
+			}
+		}
+
+		return safe;
+	} catch {
+		return false;
+	}
+}
 
 export const getDefaultNoOpPolicy = callOnce(() => createPolicy('default', {}));

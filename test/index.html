@@ -9,8 +9,8 @@
 			base-uri 'self';
 			manifest-src 'self';
 			prefetch-src 'self';
-			script-src 'self' https://unpkg.com/@shgysk8zer0/ https://unpkg.com/leaflet@1.9.3/ 'nonce-3b58877b-25c3-4af2-975f-76607bd7c78e';
-			style-src 'self' https://unpkg.com/@shgysk8zer0/ https://unpkg.com/leaflet@1.9.3/ blob:;
+			script-src 'self' https://unpkg.com/ 'nonce-3b58877b-25c3-4af2-975f-76607bd7c78e';
+			style-src 'self' https://unpkg.com/ blob:;
 			font-src cdn.kernvalley.us;
 			form-action 'none';
 			frame-src https://www.youtube-nocookie.com/embed/;
@@ -19,10 +19,10 @@
 			child-src 'self';
 			worker-src 'self';
 			frame-ancestors 'none';
-			connect-src 'self' https://unpkg.com/@shgysk8zer0/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json;
+			connect-src 'self' https://unpkg.com/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json;
 			img-src * data: blob:;
 			require-trusted-types-for 'script';
-			trusted-types empty#html empty#script default sanitizer-raw#html youtube#embed github-user#html github-repo#html;
+			trusted-types empty#html empty#script default sanitizer-raw#html trust-raw#html youtube#embed github-user#html github-repo#html;
 			upgrade-insecure-requests;"
 		/>
 		<title>Kazoo</title>
@@ -30,16 +30,25 @@
 		<script type="importmap" nonce="3b58877b-25c3-4af2-975f-76607bd7c78e">
 			{
 				"imports": {
+					"@shgysk8zer0/kazoo/": "../",
+					"@shgysk8zer0/konami": "https://unpkg.com/@shgysk8zer0/konami@1.0.10/konami.js",
 					"@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills@0.1.2/all.min.js",
 					"@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills@0.1.2/",
-					"@shgysk8zer0/components/": "https://unpkg.com/@shgysk8zer0/components@0.0.9/",
-					"@shgysk8zer0/konami": "https://unpkg.com/@shgysk8zer0/konami@1.1.1/konami.js",
-					"@shgysk8zer0/jswaggersheets": "https://unpkg.com/@shgysk8zer0/jswaggersheets/swagger.js",
-					"@shgysk8zer0/http-status": "https://unpkg.com/@shgysk8zer0/http-status@1.0.1/http-status.js",
-					"@shgysk8zer0/kazoo/": "../",
-					"leaflet": "https://unpkg.com/leaflet@1.9.3/dist/leaflet-src.esm.js",
-					"firebase/": "https://www.gstatic.com/firebasejs/9.16.0/"
-				}
+					"@shgysk8zer0/jswaggersheets": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.0.4/swagger.js",
+					"@shgysk8zer0/jswaggersheets/": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.0.4/",
+					"@shgysk8zer0/http-status": "https://unpkg.com/@shgysk8zer0/http-status@1.0.2/http-status.js",
+					"@shgysk8zer0/components/": "https://unpkg.com/@shgysk8zer0/components@0.0.12/",
+					"@kernvalley/components/": "https://unpkg.com/@kernvalley/components@1.0.2/",
+					"@webcomponents/custom-elements": "https://unpkg.com/@webcomponents/custom-elements@1.6.0/custom-elements.min.js",
+					"leaflet": "https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js",
+					"firebase/": "https://www.gstatic.com/firebasejs/9.22.2/",
+					"urlpattern-polyfill": "https://unpkg.com/urlpattern-polyfill@9.0.0/index.js",
+					"highlight.js": "https://unpkg.com/@highlightjs/cdn-assets@11.8.0/es/highlight.min.js",
+					"highlight.js/": "https://unpkg.com/@highlightjs/cdn-assets@11.8.0/",
+					"marked": "https://unpkg.com/marked@5.1.0/src/marked.js",
+					"marked-highlight": "https://unpkg.com/marked-highlight@2.0.1/src/index.js"
+				},
+				"scope": {}
 			}
 		</script>
 		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-8s5Tj7IrKDs3va2EJ3QsRxxApN9vT+thnbA8imc6bwYJA2JaAddVR5b8q5wDkrdv" src="https://unpkg.com/@shgysk8zer0/polyfills@0.1.2/all.min.js" fetchpriority="high"></script>

@@ -490,6 +490,33 @@ export function navigateTo(to, {
 	}
 }
 
+export async function getCSSStyleSheet(url, {
+	mode = 'cors',
+	cache = 'default',
+	credentials = 'omit',
+	redirect = 'follow',
+	priority = 'auto',
+	referrerPolicy = 'no-referrer',
+	media,
+	disabled = false,
+	baseURL = document.baseURI,
+	signal,
+} = {}) {
+	const resp = await fetch(url, {
+		headers: new Headers({ Accept: TYPES.CSS }),
+		mode, cache, credentials, redirect,  priority, referrerPolicy, signal,
+	});
+
+	if (! resp.ok) {
+		throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);
+	} else if (! resp.headers.get('Content-Type').startsWith(TYPES.CSS)) {
+		throw new TypeError(`Expected "Content-Type: ${TYPES.CSS}" but got ${resp.headers.get('Content-Type')}.`);
+	} else {
+		const css = await resp.text();
+		return new CSSStyleSheet({ media, disabled, baseURL }).replace(css);
+	}
+}
+
 export function postNav(url, data = {}, {
 	target = '_self' ,
 	enctype = TYPES.FORM_URL_ENCODED,

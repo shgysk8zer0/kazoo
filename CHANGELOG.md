@@ -6,6 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.0] - 2023-07-01
+
+### Added
+- Add `markdown` module
+- Add `isSafeHTML()` to `trust-policies` module (checks for unsafe elements & attributes)
+- Add `getCSSStyleSheet()` to `http` module
+- Add Markdown to `types` module
+- Add `gravatar` module
+
+### Changed
+- Rename `loadStylesheet()` -> `loadStyleSheet()` in `loader` module (with alias to old)
+- Update importmap and trusted policies
+
+### Deprecated
+- `loadStylesheet()` is deprecated
+
 ## [v0.0.17] - 2023-06-23
 
 ### Added
