@@ -1,7 +1,7 @@
 import { use, parse } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
-import { MARKDOWN } from './types.js';
+import { MARKDOWN, TEXT } from './types.js';
 
 export const STYLESHEETS = {
 	github: {
@@ -107,7 +107,7 @@ export async function fetchMarkdown(url, {
 
 	if (! resp.ok) {
 		throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);
-	} else if (! resp.headers.get('Content-Type').startsWith(MARKDOWN)) {
+	} else if (! [MARKDOWN, TEXT].some(mime => resp.headers.get('Content-Type').startsWith(mime))) {
 		throw new TypeError(`Expected "Content-Type: ${MARKDOWN}" but got ${resp.headers.get('Content-Type')}.`);
 	} else {
 		const text = await resp.text();
