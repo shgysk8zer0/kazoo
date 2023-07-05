@@ -47,14 +47,15 @@ export function isPrime(n) {
 		return false;
 	} else {
 		const sqrtAndOne = Math.floor(Math.sqrt(n)) + 1;
-		return ! Iterator.range(3, sqrtAndOne, { step: 2 }).some(f => n % f === 0);
+		const test = f => n % f === 0;
+		return ! Iterator.range(3, sqrtAndOne, { step: 2, inclusive: true }).some(test);
 	}
 }
 
 /**
  * Note: Requires iterator helper methods & `Iterator.range()`
  */
-export const primes = (start = 2, end = Infinity) => Iterator.range(start, end).filter(isPrime);
+export const primes = (start = 2, end = Infinity) => Iterator.range(start, end, { inclusive: true }).filter(isPrime);
 
 export function* fibonacci(terms = Number.MAX_SAFE_INTEGER) {
 	if (! (Number.isSafeInteger(terms) && terms > 0)) {
