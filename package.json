@@ -1,6 +1,6 @@
 {
   "name": "@shgysk8zer0/kazoo",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": false,
   "type": "module",
   "description": "A JavaScript monorepo for all the things!",
@@ -43,6 +43,16 @@
   ],
   "author": "Chris Zuber <shgysk8zer0@gmail.com>",
   "license": "MIT",
+  "funding": [
+    {
+      "type": "librepay",
+      "url": "https://liberapay.com/shgysk8zer0"
+    },
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/shgysk8zer0"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/shgysk8zer0/kazoo/issues"
   },
