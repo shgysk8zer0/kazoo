@@ -9,14 +9,15 @@ export const sandbox = ['allow-scripts', 'allow-popups', 'allow-same-origin', 'a
 export const cookie = 'https://www.youtube.com/embed/';
 export const noCookie = 'https://www.youtube-nocookie.com/embed/';
 
-export  const policy = getYouTubePolicy();
+export const policy = getYouTubePolicy();
 
 export function createYouTubeEmbed(video, {
 	height, width, fetchPriority = 'low', referrerPolicy = 'origin',
-	title = 'YouTube Embeded Video', loading = 'lazy', cookies = false,
+	title = 'YouTube Embedded Video', loading = 'lazy', credentialless = true,
 	controls = true, start,
 } = {}) {
-	const src = cookies ? new URL(`./${video}`, cookie) : new URL(`./${video}`, noCookie);
+	const src = credentialless
+		? new URL(`./${encodeURIComponent(video)}`, noCookie) : new URL(`./${encodeURIComponent(video)}`, cookie);
 
 	if (! controls) {
 		src.searchParams.set('controls', '0');
@@ -28,7 +29,7 @@ export function createYouTubeEmbed(video, {
 
 	return createIframe(src.href, {
 		width, height, loading, title, fetchPriority, referrerPolicy, allow,
-		sandbox, policy,
+		sandbox, policy, credentialless,
 	});
 }
 
