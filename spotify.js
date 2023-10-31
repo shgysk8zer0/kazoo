@@ -76,7 +76,7 @@ export function uriToLink(uri) {
 }
 
 function createSpotifyIframe(type, id, { title = 'Spotify Player', large = false, credentialless = false, slot, part } = {}) {
-	return createIframe(policy.createScriptURL(new URL(`./${type}/${id}`, SPOTIFY)), {
+	return createIframe(policy.createScriptURL(new URL(`./${encodeURIComponent(type)}/${encodeURIComponent(id)}`, SPOTIFY)), {
 		width: 300,
 		height: large ? 380 : 80,
 		referrerPolicy: 'origin',
@@ -89,24 +89,24 @@ function createSpotifyIframe(type, id, { title = 'Spotify Player', large = false
 	});
 }
 
-export function createSpotifyAlbum(id, { title, large, slot, part } = {}) {
-	return createSpotifyIframe('album', id, { title, large, slot, part });
+export function createSpotifyAlbum(id, { title, large, slot, part, credentialless } = {}) {
+	return createSpotifyIframe('album', id, { title, large, slot, part, credentialless });
 }
 
-export function createSpotifyArtist(id, { title, large, slot, part } = {}) {
-	return createSpotifyIframe('artist', id, { title, large, slot, part });
+export function createSpotifyArtist(id, { title, large, slot, part, credentialless } = {}) {
+	return createSpotifyIframe('artist', id, { title, large, slot, part, credentialless });
 }
 
-export function createSpotifyPlaylist(id, { title, large, slot, part } = {}) {
-	return createSpotifyIframe('playlist', id, { title, large, slot, part });
+export function createSpotifyPlaylist(id, { title, large, slot, part, credentialless } = {}) {
+	return createSpotifyIframe('playlist', id, { title, large, slot, part, credentialless });
 }
 
-export function createSpotifyShow(id, { title, large, slot, part } = {}) {
-	return createSpotifyIframe('show', id, { title, large, slot, part });
+export function createSpotifyShow(id, { title, large, slot, part, credentialless } = {}) {
+	return createSpotifyIframe('show', id, { title, large, slot, part, credentialless });
 }
 
-export function createSpotifyTrack(id, { title, large, slot, part } = {}) {
-	return createSpotifyIframe('track', id, { title, large, slot, part });
+export function createSpotifyTrack(id, { title, large, slot, part, credentialless } = {}) {
+	return createSpotifyIframe('track', id, { title, large, slot, part, credentialless });
 }
 
 export const trustPolicies = [policy.name];

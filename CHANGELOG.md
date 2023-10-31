@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.5] - 2023-10-31
+
+### Fixed
+- Spotify embed module now supports `credentialless` in all functions
+
 ## [v0.2.4] - 2023-10-31
 
 ### Added
