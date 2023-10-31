@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.4] - 2023-10-31
+
+### Added
+- Add utility function for Simple UIDs
+- Add support for `credentialless` iframes [#44](https://github.com/shgysk8zer0/kazoo/issues/44)
+
 ## [v0.2.3] - 2023-07-19
 
 ### Added

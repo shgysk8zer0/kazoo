@@ -9,7 +9,7 @@ export function createKRVMaps({
 	latitude = NaN, longitude = NaN, popup, tiles, target,
 	maxZoom = NaN, minZoom = NaN, zoom = NaN, zoomControl = false,
 	fetchPriority = 'auto', title, id, classList, referrerPolicy = 'no-referrer',
-	styles, dataset, slot, part,
+	credentialless = true, styles, dataset, slot, part,
 } = {}) {
 	const src = new URL(trustedURLs.maps);
 	const allow = [];
@@ -41,7 +41,7 @@ export function createKRVMaps({
 
 	if (typeof target === 'string') {
 		src.hash = `#${target}`;
-	}else if (typeof popup === 'string' && popup.length !== 0) {
+	} else if (typeof popup === 'string' && popup.length !== 0) {
 		src.searchParams.set('popup', popup);
 	} else if (popup instanceof HTMLElement) {
 		src.searchParams.set('popup', popup.outerHTML);
@@ -70,13 +70,14 @@ export function createKRVMaps({
 	return createIframe(src.href, {
 		height, width, referrerPolicy, loading, title, classList, id,
 		fetchPriority, allow, sandbox, styles, dataset, slot, part, policy,
+		credentialless,
 	});
 }
 
 export function createKRVEvents({
 	theme, source, width, height, loading = 'lazy',
 	fetchPriority = 'auto', title, id, classList, referrerPolicy = 'no-referrer',
-	styles, dataset, slot, part,
+	credentialless = true, styles, dataset, slot, part,
 } = {}) {
 	const src = new URL(trustedURLs.events);
 
@@ -91,14 +92,14 @@ export function createKRVEvents({
 	return createIframe(src.href, {
 		height, width, referrerPolicy, title, id, classList, fetchPriority,
 		loading, policy, sandbox: ['allow-scripts', 'allow-popups'], styles,
-		dataset, slot, part,
+		dataset, slot, part, credentialless,
 	});
 }
 
 export function createWFDEvents({
 	theme, source, width, height, loading = 'lazy', images = false,
 	fetchPriority = 'auto', title, id, classList, referrerPolicy = 'no-referrer',
-	styles, dataset, slot, part,
+	credentialless = true, styles, dataset, slot, part,
 } = {}) {
 	const src = new URL(trustedURLs.wfdEvents.href);
 
@@ -117,7 +118,7 @@ export function createWFDEvents({
 	return createIframe(src.href, {
 		height, width, referrerPolicy, fetchPriority, loading, title, classList,
 		id, policy, sandbox: ['allow-scripts', 'allow-popups'], styles, dataset,
-		slot, part,
+		slot, part, credentialless,
 	});
 }
 
