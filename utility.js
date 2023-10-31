@@ -8,6 +8,9 @@ import { isBare, resolveModule } from './module.js';
 
 const funcs = new WeakMap();
 
+// Math.log(Number.MAX_SAFE_INTEGER);
+const LOG_MAX_SAFE_INTEGER = 36.7368005696771;
+
 export function isStrictMode() {
 	// Probably always true
 	return typeof this === 'undefined';
@@ -403,6 +406,25 @@ export function random(arr) {
 	if (Array.isArray(arr) && arr.length !== 0) {
 		return arr[randomInt(0, arr.length)];
 	}
+}
+
+export function getSimpleUID({ radix = 36, padding = null, seperator = '-', timestamp = Date.now() } = {}) {
+	const date = timestamp.toString(radix);
+	const random = crypto.getRandomValues(new Uint32Array(1))[0].toString(radix);
+
+	if (typeof padding !== 'string' || padding.length === 0) {
+		return `${date}${seperator}${random}`;
+	} else if (padding.length !== 1) {
+		throw new TypeError('Padding must be a single character');
+	} else {
+		const length = Math.ceil(LOG_MAX_SAFE_INTEGER / Math.log(radix));
+		return `${date.padStart(length, padding)}${seperator}${random.padStart(length, padding)}`;
+	}
+}
+
+export function parseSimpleUID(uid, { radix = 36, seperator = '-' } = {}) {
+	const [date, random] = uid.split(seperator).map(str => parseInt(str, radix));
+	return { date: new Date(date), random };
 }
 
 export const toSpinalCase = str => str.replace(/[A-Z]/g, (m, i) => i === 0
