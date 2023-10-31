@@ -10,6 +10,7 @@ import { JS } from './types.js';
 import { isScriptURL, isHTML, setProp } from './trust.js';
 import { getJSONScriptPolicy } from './trust-policies.js';
 import { resolveModule, isBare } from './module.js';
+import { STATES } from './states.js';
 
 export function copyAs(target, tag, {
 	includeAttributes = true,
@@ -508,6 +509,7 @@ export function createIframe(src, {
 	sandbox = ['allow-scripts'],
 	allow = [],
 	referrerPolicy = REFERRER_POLICY,
+	credentialless = false,
 	classList = [],
 	dataset = null,
 	styles = null,
@@ -524,6 +526,10 @@ export function createIframe(src, {
 		events: { capture, passive, once, signal, ...events },
 		...rest
 	});
+
+	if (credentialless) {
+		iframe.credentialless = true;
+	}
 
 	iframe.loading = loading;
 	iframe.fetchPriority = fetchPriority;
@@ -787,6 +793,44 @@ export function createSelect(name, options = [], {
 
 		return select;
 	}
+}
+
+export function createStateSelect(name, {
+	required = false,
+	disabled = false,
+	multiple = false,
+	autocomplete = 'address-level1',
+	id,
+	classList,
+	dataset,
+	styles,
+	slot,
+	part,
+	animation,
+	events: { capture, passive, once, signal, ...events } = {},
+	...attrs
+} = {}) {
+	const labelMap = {
+		states: 'U.S. States',
+		armedForces: 'U.S. Armed Forces',
+		territories: 'U.S. Territories'
+	};
+
+	const states = STATES.reduce((groups, { abbr: value, name: label, group }) => {
+		if (! groups.hasOwnProperty(group)) {
+			groups[group] = [];
+		}
+
+		groups[group].push({ label, value });
+
+		return groups;
+	}, {});
+
+	return createSelect(name, Object.entries(states).map(([label, options]) => ({ label: labelMap[label], options })), {
+		required, disabled, multiple, id, classList, dataset, autocomplete, styles,
+		slot, part, animation, events: { capture, passive, once, signal, ...events },
+		...attrs,
+	});
 }
 
 export async function showDialog({ text, html, children = [], classList = [], animation, signal, ...rest }) {

@@ -75,11 +75,12 @@ export function uriToLink(uri) {
 	}
 }
 
-function createSpotifyIframe(type, id, { title = 'Spotify Player', large = false, slot, part } = {}) {
+function createSpotifyIframe(type, id, { title = 'Spotify Player', large = false, credentialless = false, slot, part } = {}) {
 	return createIframe(policy.createScriptURL(new URL(`./${type}/${id}`, SPOTIFY)), {
 		width: 300,
 		height: large ? 380 : 80,
 		referrerPolicy: 'origin',
+		credentialless,
 		slot,
 		part,
 		sandbox: SANDBOX,
