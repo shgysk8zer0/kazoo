@@ -3,7 +3,7 @@
  */
 import { createScript } from './elements.js';
 import { getDeferred } from './promises.js';
-import { JS } from './types.js';
+import { JS } from '@shgysk8zer0/consts/mimes.js';
 import { getDisqusPolicy } from './trust-policies.js';
 
 const policyName = 'disqus#script-url';

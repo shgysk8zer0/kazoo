@@ -1,10 +1,10 @@
 /**
  * @copyright 2022-2023 Chris Zuber <admin@kernvalley.us>
  */
-import { SVG, XLINK } from './namespaces.js';
+import { SVG, XLINK } from '@shgysk8zer0/consts/namespaces.js';
 import { isObject } from './utility.js';
 import { css, data, attr } from './attrs.js';
-import { SVG as TYPE } from './types.js';
+import { SVG as TYPE } from '@shgysk8zer0/consts/mimes.js';
 
 export { rotate, scale, translate } from './animate.js';
 
