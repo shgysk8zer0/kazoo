@@ -1,7 +1,7 @@
 /**
  * @copyright 2023 Chris Zuber <admin@kernvalley.us>
  */
-import { JS } from './types.js';
+import { JS } from '@shgysk8zer0/consts/mimes.js';
 import { createScript, createImage, createLink } from './elements.js';
 import { getDeferred } from './promises.js';
 import { getHTML } from './http.js';

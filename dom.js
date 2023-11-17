@@ -5,7 +5,7 @@ import { signalAborted } from './abort.js';
 import { addListener, listen } from './events.js';
 import { getDeferred, isAsync } from './promises.js';
 import { isHTML, isTrustPolicy } from './trust.js';
-import { HTML } from './types.js';
+import { HTML } from '@shgysk8zer0/consts/mimes.js';
 import { errorToEvent, callOnce, isIterable } from './utility.js';
 import { data as setData, css as setCss, attr as setAttr, aria as setAria } from './attrs.js';
 

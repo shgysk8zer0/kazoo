@@ -6,7 +6,7 @@ import { signalAborted } from './abort.js';
 import { setURLParams, setUTMParams, isObject, isNullish, callOnce } from './utility.js';
 import { isTrustPolicy } from './trust.js';
 import { HTTPException } from './HTTPException.js';
-import * as TYPES from './types.js';
+import * as TYPES from '@shgysk8zer0/consts/mimes.js';
 
 function filename(src) {
 	if (typeof src === 'string') {

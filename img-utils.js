@@ -3,7 +3,7 @@
  */
 import { getDeferred } from './promises.js';
 import { createElement } from './elements.js';
-import { JPEG, PNG, GIF, WEBP, SVG } from './types.js';
+import { JPEG, PNG, GIF, WEBP, SVG } from '@shgysk8zer0/consts/mimes.js';
 import { getType } from './utility.js';
 
 export const EXTENSIONS = {

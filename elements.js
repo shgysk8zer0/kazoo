@@ -6,11 +6,12 @@ import { listen } from './events.js';
 import { getDeferred } from './promises.js';
 import { REFERRER_POLICY } from './defaults.js';
 import { isObject, isNullish, isIterable } from './utility.js';
-import { JS } from './types.js';
+import { JS } from '@shgysk8zer0/consts/mimes.js';
 import { isScriptURL, isHTML, setProp } from './trust.js';
 import { getJSONScriptPolicy } from './trust-policies.js';
 import { resolveModule, isBare } from './module.js';
-import { STATES } from './states.js';
+import { STATES } from '@shgysk8zer0/consts/states.js';
+import { TIMEZONES }  from '@shgysk8zer0/consts/timezones.js';
 
 export function copyAs(target, tag, {
 	includeAttributes = true,
@@ -831,6 +832,38 @@ export function createStateSelect(name, {
 		slot, part, animation, events: { capture, passive, once, signal, ...events },
 		...attrs,
 	});
+}
+
+export function createTimezoneSelect(name, {
+	required = false,
+	disabled = false,
+	multiple = false,
+	selected,
+	id,
+	classList,
+	dataset,
+	styles,
+	slot,
+	part,
+	animation,
+	events: { capture, passive, once, signal, ...events } = {},
+	...attrs
+} = {}) {
+	const timezones = Object.groupBy(TIMEZONES, tz => tz === 'UTC' ? 'UTC' : tz.substring(0, tz.indexOf('/')));
+
+	const select = createSelect(name, Object.entries(timezones).map(([label, options]) => ({ label, options })), {
+		required, disabled, multiple, id, classList, dataset, styles,
+		slot, part, animation, events: { capture, passive, once, signal, ...events },
+		...attrs,
+	});
+
+	if (typeof selected === 'string' && TIMEZONES.includes(selected)) {
+		select.value = selected;
+	}
+
+	select.prepend(createOption({ label: 'Select timezone', value: '' }));
+
+	return select;
 }
 
 export async function showDialog({ text, html, children = [], classList = [], animation, signal, ...rest }) {

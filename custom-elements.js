@@ -1,7 +1,7 @@
 /**
  * @copyright 2023 Chris Zuber <admin@kernvalley.us>
  */
-import { HTML } from './types.js';
+import { HTML } from '@shgysk8zer0/consts/mimes.js';
 
 export const supported = globalThis.customElements instanceof Object;
 

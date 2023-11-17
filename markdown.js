@@ -1,7 +1,7 @@
 import { use, parse } from 'marked';
 import { markedHighlight } from 'marked-highlight';
 import hljs from 'highlight.js';
-import { MARKDOWN, TEXT } from './types.js';
+import { MARKDOWN, TEXT } from '@shgysk8zer0/consts/mimes.js';
 
 export const STYLESHEETS = {
 	github: {

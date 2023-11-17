@@ -1,6 +1,8 @@
 /**
  * @copyright 2023 Chris Zuber <admin@kernvalley.us>
  */
+console.warn('state.js module is deprecated. Please use `@shgysk8zer0/consts/states.js` instead.');
+
 export const STATES = [{
 	'abbr': 'AL',
 	'name': 'Alabama',

@@ -3,7 +3,7 @@
  */
 import { createPolicy } from './trust.js';
 import { callOnce } from './utility.js';
-import { HTML } from './types.js';
+import { HTML } from '@shgysk8zer0/consts/mimes.js';
 // @todo Remove use of `Sanitizer.getDefaultConfiguration()`
 const {
 	allowElements, allowAttributes, allowComments, blockElements, dropAttributes,
