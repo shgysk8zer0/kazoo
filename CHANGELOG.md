@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.6] - 2023-11-17
+
+### Added
+- Add `qr.js` module using `https://api.qrserver.com/`
+- Add `iCal.js` module to create iCalendar files & QR codes
+- Add `timeZoneInfo.js` module for getting time zone info/offsets
+
+### Changed
+- Update to use `@shgysk8zer0/consts`
+
+### Deprecated
+- Mark own version of constants (`namespaces.js`, `states.js`, & `types.js`) as deprecated
+
 ## [v0.2.5] - 2023-10-31
 
 ### Fixed
