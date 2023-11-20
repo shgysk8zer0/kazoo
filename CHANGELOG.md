@@ -6,12 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.7] - 2023-11-20
+
+### Fixed
+- Append links to document when saving files for supposedly better compatibility
+
+### Deprecated
+- Deprecate `open()` and `save()` from `filesystem.js` (use `openFile()` & `saveFile()`)
+
 ## [v0.2.6] - 2023-11-17
 
 ### Added
 - Add `qr.js` module using `https://api.qrserver.com/`
 - Add `iCal.js` module to create iCalendar files & QR codes
 - Add `timeZoneInfo.js` module for getting time zone info/offsets
+- `blob#script-url` & `data#script-url` trust policies
 
 ### Changed
 - Update to use `@shgysk8zer0/consts`
