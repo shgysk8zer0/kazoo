@@ -4,7 +4,7 @@
 import { getDeferred, lock } from './promises.js';
 import { createElement, createInput } from './elements.js';
 
-export async function getDataURI(file, { base64 = true, policy } = {})  {
+export async function getDataURI(file, { base64 = true } = {})  {
 	return base64
 		? `data:${file.type};base64,${btoa(await file.text())}`
 		: `data:${file.type},${encodeURIComponent(await file.text())}`;
