@@ -237,6 +237,26 @@ export const getJSONScriptPolicy = callOnce(() => {
 	});
 });
 
+export const getBlobScriptURLPolicy = callOnce(() => createPolicy('blob#script-url', {
+	createScriptURL: input => {
+		if (input.startsWith('blob:')) {
+			return input;
+		} else {
+			throw new TypeError(`${input} is not a blob: URI.`);
+		}
+	}
+}));
+
+export const getDataScriptURLPolicy = callOnce(() => createPolicy('data#script-url', {
+	createScriptURL: input => {
+		if (input.startsWith('data:')) {
+			return input;
+		} else {
+			throw new TypeError(`${input} is not a data: URI.`);
+		}
+	}
+}));
+
 export const getDefaultPolicyWithDisqus = callOnce(() => {
 	return createPolicy('default', {
 		createHTML: input => sanitizeHTML(input, {
