@@ -4,12 +4,21 @@
 import { getDeferred, lock } from './promises.js';
 import { createElement, createInput } from './elements.js';
 
-export async function save(file, { signal } = {}) {
+export async function getDataURI(file, { base64 = true, policy } = {})  {
+	return base64
+		? `data:${file.type};base64,${btoa(await file.text())}`
+		: `data:${file.type},${encodeURIComponent(await file.text())}`;
+}
+
+export async function saveFile(file, { signal, type = 'blob', base64 = true } = {}) {
 	if (signal instanceof EventTarget && signal.aborted) {
 		throw signal.reason;
 	} else if (file instanceof File) {
 		const link = document.createElement('a');
-		const url = URL.createObjectURL(file);
+		const { resolve, promise } = Promise.withResolvers();
+		const url =  type ===  'blob'
+			? URL.createObjectURL(file)
+			: await getDataURI(file, { base64 });
 
 		link.href = url;
 		link.download = file.name;
@@ -17,18 +26,24 @@ export async function save(file, { signal } = {}) {
 
 		link.addEventListener('click', ({ target }) => {
 			requestIdleCallback(() => {
-				URL.revokeObjectURL(target.href);
+				if (target.href.startsWith('blob:')) {
+					URL.revokeObjectURL(target.href);
+				}
 				target.remove();
+				resolve();
 			});
 		}, { passive: true, capture: true, once: true, signal });
 
+		document.body.append(link);
 		link.click();
+
+		await promise;
 	} else {
 		throw new TypeError('Not a file');
 	}
 }
 
-export async function open({
+export async function openFile({
 	accept = null,
 	multiple = false,
 	directory = false,
@@ -165,3 +180,20 @@ export async function open({
 		}, { signal, mode: 'exclusive' });
 	}
 }
+
+
+/**
+ * @deprecated
+ */
+export const save = async (...args)  => {
+	console.warn('`save()` is deprecated. Please use `saveFile()` instead.');
+	return await saveFile(...args);
+};
+
+/**
+ * @deprecated
+ */
+export const open = async (...args)=> {
+	console.warn('`open()` is deprecated. Please use `openFile()` instead.');
+	return await openFile(...args);
+};
