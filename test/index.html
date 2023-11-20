@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-trusted-policies="empty#html empty#script custom#html sanitizer-raw#html youtube#embed">
+<html lang="en" dir="ltr" data-trusted-policies="empty#html empty#script custom#html sanitizer-raw#html blob#script-url  youtube#embed">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -9,7 +9,7 @@
 			base-uri 'self';
 			manifest-src 'self';
 			prefetch-src 'self';
-			script-src 'self' https://unpkg.com/ 'nonce-3b58877b-25c3-4af2-975f-76607bd7c78e';
+			script-src 'self' https://unpkg.com/ 'nonce-3b58877b-25c3-4af2-975f-76607bd7c78e' blob:;
 			style-src 'self' https://unpkg.com/ blob:;
 			font-src cdn.kernvalley.us;
 			form-action 'none';
@@ -22,7 +22,7 @@
 			connect-src 'self' https://unpkg.com/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json;
 			img-src * data: blob:;
 			require-trusted-types-for 'script';
-			trusted-types empty#html empty#script default sanitizer-raw#html trust-raw#html youtube#embed github-user#html github-repo#html;
+			trusted-types empty#html empty#script default sanitizer-raw#html trust-raw#html youtube#embed github-user#html github-repo#html blob#script-url;
 			upgrade-insecure-requests;"
 		/>
 		<title>Kazoo</title>

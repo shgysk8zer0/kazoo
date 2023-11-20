@@ -6,6 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.7] - 2023-11-20
+
+### Added
+- `blob#script-url` & `data#script-url` trust policies
+
+### Fixed
+- Append links to document when saving files for supposedly better compatibility
+
+### Deprecated
+- Deprecate `open()` and `save()` from `filesystem.js` (use `openFile()` & `saveFile()`)
+
 ## [v0.2.6] - 2023-11-17
 
 ### Added
