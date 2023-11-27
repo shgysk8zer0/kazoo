@@ -3,6 +3,7 @@ import { ICAL as ICAL_EXT } from '@shgysk8zer0/consts/exts.js';
 import { createQRCode } from './qr.js';
 
 const CRLF = '\r\n';
+export const VERSION = '1.0.0';
 const BEGIN_EVENT = 'BEGIN:VEVENT';
 const END_EVENT = 'END:VEVENT';
 const ESCAPE_CHARS = {
@@ -41,6 +42,16 @@ function formatDate(date) {
 	].join('');
 }
 
+function getOrganizer({ name, email } = {}) {
+	let str = typeof name === 'undefined' ? 'ORGANIZER:' : `ORGANIZER;CN=${escape(name)}:`;
+
+	if (typeof email !== 'undefined') {
+		str += `mailto:${escape(email)}`;
+	}
+
+	return str;
+}
+
 export function createICalEvent({
 	name,
 	startDate,
@@ -49,19 +60,21 @@ export function createICalEvent({
 	method = 'REQUEST',
 	location,
 	url,
+	organizer,
 	modified = new Date(),
+	sequence = 0,
 	uid = crypto.randomUUID(),
 }) {
 	if (typeof name !== 'string' || name.length === 0) {
 		throw new TypeError('Event name must be a non-empty string.');
 	} else if (typeof startDate === 'string' || typeof startDate === 'number') {
-		return createICalEvent({ name,  startDate: new Date(startDate), endDate, description, location, modified, uid });
+		return createICalEvent({ name,  startDate: new Date(startDate), endDate, description, location, url, organizer, modified, sequence, uid });
 	} else if (! (startDate instanceof Date)) {
 		throw new TypeError('startDate must be a Date object');
 	} else if (typeof endDate === 'string' || typeof endDate === 'number')  {
-		return createICalEvent({ name,  startDate, endDate: new Date(endDate), description, location, modified, uid });
+		return createICalEvent({ name,  startDate, endDate: new Date(endDate), description, location, url, organizer, modified, sequence, uid });
 	} else if (typeof modified === 'string' || typeof modified === 'number') {
-		return createICalEvent({ name,  startDate, endDate, description, location, modified: new Date(modified), uid });
+		return createICalEvent({ name,  startDate, endDate, description, location, url, organizer, modified: new Date(modified), sequence, uid });
 	} else if (! (modified instanceof Date)){
 		throw new TypeError('Modified must be a date.');
 	} else {
@@ -69,9 +82,10 @@ export function createICalEvent({
 			'BEGIN:VCALENDAR',
 			'VERSION:2.0',
 			`METHOD:${method}`,
-			'PRODID:-//github.com/shgysk8zer0/kazoo v1.0//EN',
+			`PRODID:-//github.com/shgysk8zer0/kazoo v${VERSION}//EN`,
 			BEGIN_EVENT,
 			`UID:${escape(uid)}`,
+			`SEQUENCE:${Math.min(0, sequence)}`,
 			`SUMMARY:${escape(name.trim())}`,
 			`LOCATION:${escape(location.trim())}`,
 			`DTSTAMP:${formatUTCDate(modified)}`,
@@ -84,6 +98,10 @@ export function createICalEvent({
 
 		if (typeof description === 'string' && description.length !== 0) {
 			lines.push(`DESCRIPTION:${escape(description.trim())}`);
+		}
+
+		if (typeof organizer === 'object' && organizer !== null) {
+			lines.push(getOrganizer(organizer));
 		}
 
 		if ((typeof url === 'string' &&  url.length !== 0) || url instanceof URL) {
@@ -132,11 +150,13 @@ export function createICalEventFile({
 	url,
 	modified = new Date(),
 	uid = crypto.randomUUID(),
+	sequence,
+	organizer,
 }) {
 	if (typeof startDate === 'string' || typeof startDate === 'number') {
-		return createICalEventFile({ name, startDate: new Date(startDate), endDate, description, method, location, url, modified, uid });
+		return createICalEventFile({ name, startDate: new Date(startDate), endDate, description, method, location, url, modified, uid, sequence, organizer });
 	} else {
-		const iCal = createICalEvent({ name, startDate, endDate, description, method, location, url, modified, uid });
+		const iCal = createICalEvent({ name, startDate, endDate, description, method, location, url, modified, uid, sequence, organizer });
 		return new File([iCal], `${startDate.toISOString()} ${name.replaceAll(/[^A-Za-z0-9]+/g, '-')}${ICAL_EXT}`, { type: ICAL_MIME });
 	}
 }

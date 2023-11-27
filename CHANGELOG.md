@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.8] - 2023-11-26
+
+### Added
+- Create async generator helper module with `getGeneratorWithResolvers`
+- Add basic implementations of `Stack` and `Queue`
+
+### Changed
+- Add Organizer and Sequence support for iCal events
+- Update signal logic in `when()`
+
 ## [v0.2.7] - 2023-11-20
 
 ### Added
