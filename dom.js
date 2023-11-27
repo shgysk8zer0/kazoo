@@ -288,28 +288,22 @@ export function off(what, when, ...args) {
 	});
 }
 
-export async function when(what, events, { capture, passive, signal, base } = {}) {
+export async function when(what, events, { capture, passive, signal: givenSignal, base } = {}) {
+	const { promise, resolve, reject } = Promise.withResolvers();
 	const controller = new AbortController();
-	const { promise, resolve, reject } = getDeferred();
+	const signal = givenSignal instanceof AbortSignal
+		? AbortSignal.any([givenSignal, controller.signal])
+		: controller.signal;
 
-	if (signal instanceof AbortSignal) {
-		if (signal.aborted) {
-			controller.abort(signal.reason);
-		} else {
-			addEventListener([signal], ['abort'], () => {
-				controller.abort(signal.reason);
-				reject(signal.reason);
-			}, { once: true, signal: controller.signal });
-		}
-	}
-
-	if (controller.signal.aborted) {
-		reject(controller.signal.reason);
+	if (signal.aborted) {
+		reject(signal.reason);
 	} else {
 		on(query(what, base), events, event => {
 			resolve(event);
 			controller.abort();
-		}, { capture, passive, signal: controller.signal });
+		}, { capture, passive, signal });
+
+		signal.addEventListener('abort', ({ target }) => reject(target.reason), { once: true });
 	}
 
 	return promise;
