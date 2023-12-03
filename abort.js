@@ -2,7 +2,6 @@
  * @copyright 2023 Chris Zuber <admin@kernvalley.us>
  */
 import { when, beforeUnload, unloaded } from './dom.js';
-import { getDeferred } from './promises.js';
 import { listen } from './events.js';
 export const supported =  'AbortController' in window && AbortController.prototype.hasOwnProperty('signal');
 
@@ -35,7 +34,7 @@ export function isAborted(signal) {
 }
 
 export async function signalAborted(signal) {
-	const { reject, promise } = getDeferred();
+	const { reject, promise } = Promise.withResolvers();
 
 	if (signal instanceof AbortController) {
 		return signalAborted(signal.signal);
@@ -44,7 +43,7 @@ export async function signalAborted(signal) {
 	} else if (signal.aborted) {
 		reject(signal.reason);
 	} else {
-		signal.addEventListener('abort', ({ target }) => reject(target.reason),{ once: true });
+		signal.addEventListener('abort', ({ target }) => reject(target.reason), { once: true });
 	}
 
 	return promise;
