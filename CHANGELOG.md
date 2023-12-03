@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.9] - 2023-12-3
+
+### Added
+- Various iCal consts, effectively enums
+- ICal support for attendees and organizer
+
+### Changed
+- Numerous updates to iCal generating (beyond additions)
+- Begin using `Promise.withResolvers()`
+
 ## [v0.2.8] - 2023-11-26
 
 ### Added

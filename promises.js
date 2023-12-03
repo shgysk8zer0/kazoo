@@ -8,7 +8,7 @@ export async function locksSupported() {
 	if ('locks' in navigator) {
 		try {
 			return await navigator.locks.request('lock-test', () => true);
-		} catch(err) {
+		} catch {
 			return false;
 		}
 	}
@@ -23,14 +23,9 @@ export function isAsync(what) {
 }
 
 export function getDeferred({ signal } = {}) {
-	const deferred = {};
+	const deferred = Promise.withResolvers();
 
-	deferred.promise = new Promise((resolve, reject) => {
-		deferred.resolve = resolve;
-		deferred.reject = reject;
-	});
-
-	if (signal instanceof EventTarget && signal.throwIfAborted instanceof Function) {
+	if (signal instanceof AbortSignal) {
 		if (signal.aborted) {
 			deferred.reject(signal.reason);
 		} else {
@@ -38,7 +33,7 @@ export function getDeferred({ signal } = {}) {
 		}
 	}
 
-	return Object.seal(deferred);
+	return deferred;
 }
 
 export async function callAsAsync(callback, args = [], { thisArg = globalThis, signal } = {}) {
@@ -155,3 +150,4 @@ export async function sleep(timeout, { signal } = {}) {
 		.catch(() => resolve(performance.now()));
 	return await promise;
 }
+
