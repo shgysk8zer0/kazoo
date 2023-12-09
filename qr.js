@@ -1,6 +1,7 @@
 import { createImage } from './elements.js';
 import { setUTMParams } from './utility.js';
 import { clamp } from './math.js';
+import { formatDate, formatLines, createEvent } from './iCal.js';
 
 export const QRSERVER = 'https://api.qrserver.com/';
 
@@ -59,4 +60,31 @@ export function createURLQRCode(url, {
 } = {}) {
 	const utmURL = setUTMParams(url, { source, medium, content, campaign, term });
 	return createQRCode(utmURL, rest);
+}
+
+export function createICalEventQR({
+	name,
+	startDate,
+	endDate,
+	description,
+	location,
+	size,
+	margin,
+	format,
+	color,
+	bgColor,
+	ecc,
+}) {
+	const str = formatLines(createEvent({
+		name, startDate, endDate, description, location, sequence: null,
+		classification: null, transparency: null, status: null,
+	}));
+
+	// QR Events only get the event info, not whole calendar
+	const data = str
+		// Fix Google Calendar not respecting UTC via "Z"
+		.replace(/^DTSTART:\d+T\d+Z$/m, 'DTSTART:' + formatDate(new Date(startDate)))
+		.replace(/^DTEND:\d+T\d+Z$/m, 'DTEND:' + formatDate(new Date(endDate)));
+
+	return createQRCode(data, { size, margin, format, color, bgColor, ecc });
 }
