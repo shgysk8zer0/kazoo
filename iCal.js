@@ -1,6 +1,5 @@
 import { ICAL as ICAL_MIME } from '@shgysk8zer0/consts/mimes.js';
 import { ICAL as ICAL_EXT } from '@shgysk8zer0/consts/exts.js';
-import { createQRCode } from './qr.js';
 
 export const VERSION = '1.0.0';
 
@@ -71,11 +70,9 @@ const BEGIN_CALENDAR = 'BEGIN:VCALENDAR';
 const END_CALENDAR = 'END:VCALENDAR';
 const BEGIN_EVENT = 'BEGIN:VEVENT';
 const END_EVENT = 'END:VEVENT';
+const ESCAPE_REGEXP = new RegExp(`[${Object.keys(ESCAPE_CHARS).join('')}]`, 'g');
 
-const escape = str => str.toString().trim().replaceAll(
-	new RegExp(`[${Object.keys(ESCAPE_CHARS).join('')}]`, 'g'),
-	char => ESCAPE_CHARS[char]
-);
+const escape = str => str.toString().trim().replaceAll(ESCAPE_REGEXP, char => ESCAPE_CHARS[char]);
 
 function* lineGenerator(str) {
 	if (str.length < 76) {
@@ -90,7 +87,7 @@ function* lineGenerator(str) {
 
 const fold = line => [...lineGenerator(line)].join(CRLF);
 
-function formatUTCDate(date) {
+export function formatUTCDate(date) {
 	return [
 		date.getUTCFullYear().toString().padStart(4, '0'),
 		(date.getUTCMonth() + 1).toString().padStart(2, '0'),
@@ -103,7 +100,7 @@ function formatUTCDate(date) {
 	].join('');
 }
 
-function formatDate(date) {
+export function formatDate(date) {
 	return [
 		date.getFullYear().toString().padStart(4, '0'),
 		(date.getMonth() + 1).toString().padStart(2, '0'),
@@ -163,13 +160,49 @@ function getAttendee({
 	}
 }
 
-function formatLines(lines) {
+function getDescription(description, { isHTML = false, fallback } = {}) {
+	if (typeof description === 'string' && description.length !== 0) {
+		return isHTML
+			? `DESCRIPTION;ALTREP="data:text/html,${escape(encodeURIComponent(description))}":${escape(fallback ?? description)}`
+			: `DESCRIPTION:${escape(description)}`;
+	} else if (description instanceof HTMLTemplateElement) {
+		return getDescription(description.content);
+	} else if (description instanceof HTMLElement) {
+		return getDescription(description.outerHTML, { isHTML: true, fallback: description.textContent });
+	} else if (description instanceof DocumentFragment) {
+		const el = document.createElement('div');
+		el.append(description);
+		return getDescription(el.innerHTML, { isHTML: true, fallback: el.textContent });
+	}
+}
+export function formatLines(lines) {
 	return lines.filter(line => typeof line === 'string' && line.length !== 0)
 		.map(line => fold(line))
 		.join(CRLF);
 }
 
-function createEvent({
+/**
+ * Creates an iCalendar event string.
+ *
+ * @param {Object} options - Options for creating the iCalendar event.
+ * @param {string} options.status - The status of the event (e.g., CONFIRMED, TENTATIVE).
+ * @param {string} options.transparency - The transparency of the event (e.g., OPAQUE, TRANSPARENT).
+ * @param {string} options.classification - The classification of the event (e.g., PUBLIC, PRIVATE).
+ * @param {string} options['@id'] - The unique identifier for the event.
+ * @param {number} options.sequence - The sequence number for the event.
+ * @param {string} options.name - The name or summary of the event.
+ * @param {Date|string|number} options.startDate - The start date and time of the event.
+ * @param {Date|string|number} options.endDate - The end date and time of the event.
+ * @param {string} options.description - The description of the event.
+ * @param {string|object} options.location - The location of the event.
+ * @param {string|URL} options.url - The URL associated with the event.
+ * @param {Object} options.organizer - The organizer of the event.
+ * @param {Array} options.attendees - An array of attendees for the event.
+ * @param {Date|string|number} options.created - The creation date of the event.
+ * @param {Date|string|number} options.lastModified - The last modified date of the event.
+ * @returns {string} - The iCalendar event string.
+ */
+export function createEvent({
 	status = STATUS.CONFIRMED,
 	transparency = TRANSPARENCY.OPAQUE,
 	classification = CLASSIFICATION.PUBLIC,
@@ -183,7 +216,8 @@ function createEvent({
 	url,
 	organizer,
 	attendees = [],
-	modified = new Date(),
+	created,
+	lastModified = new Date(),
 }) {
 	if (typeof name !== 'string' || name.length === 0) {
 		throw new TypeError('Event name must be a non-empty string.');
@@ -191,7 +225,7 @@ function createEvent({
 		return createEvent({
 			status, transparency, classification, '@id': uid, sequence,
 			name, startDate: new Date(startDate), endDate, description, location,
-			url, organizer, attendees, modified,
+			url, organizer, attendees, created, lastModified,
 		});
 	} else if (! (startDate instanceof Date)) {
 		throw new TypeError('startDate must be a Date object');
@@ -199,16 +233,24 @@ function createEvent({
 		return createEvent({
 			status, transparency, classification, '@id': uid, sequence,
 			name, startDate, endDate: new Date(endDate), description, location,
-			url, organizer, attendees, modified,
+			url, organizer, attendees, created, lastModified,
 		});
-	} else if (typeof modified === 'string' || typeof modified === 'number') {
+	} else if (endDate instanceof Date && ! (endDate.getTime() > startDate.getTime())) {
+		throw new Error('End Date must be after Start  Date.');
+	} else if (typeof lastModified === 'string' || typeof lastModified === 'number') {
 		return createEvent({
 			status, transparency, classification, '@id': uid, sequence,
 			name, startDate, endDate, description, location,
-			url, organizer, attendees, modified: new Date(modified),
+			url, organizer, attendees, created, lastModified: new Date(lastModified),
 		});
-	} else if (! (modified instanceof Date)){
-		throw new TypeError('Modified must be a date.');
+	} else if (! (lastModified instanceof Date)){
+		throw new TypeError('Last Modified must be a date.');
+	} else if (typeof created === 'string' || typeof created === 'number') {
+		return createEvent({
+			status, transparency, classification, '@id': uid, sequence,
+			name, startDate, endDate, description, location,
+			url, organizer, attendees, created: new Date(created), lastModified,
+		});
 	} else {
 		const lines = [
 			BEGIN_EVENT,
@@ -220,16 +262,15 @@ function createEvent({
 			typeof classification === 'string' ? `CLASS:${escape(classification)}` : undefined,
 			`SUMMARY:${escape(name.trim())}`,
 			`LOCATION:${typeof location === 'object' ? escape(addressObjectToString(location)) : escape(location.trim())}`,
-			`DTSTAMP:${formatUTCDate(modified)}`,
+			getDescription(description),
+			`DTSTAMP:${formatUTCDate(lastModified)}`,
+			`LAST-MODIFIED:${formatUTCDate(lastModified)}`,
+			created instanceof Date ? `CREATED:${formatUTCDate(created)}` : undefined,
 			`DTSTART:${formatUTCDate(startDate)}`,
 		];
 
 		if (endDate instanceof Date) {
 			lines.push(`DTEND:${formatUTCDate(endDate)}`);
-		}
-
-		if (typeof description === 'string' && description.length !== 0) {
-			lines.push(`DESCRIPTION:${escape(description.trim())}`);
 		}
 
 		if (typeof organizer === 'object' && organizer !== null) {
@@ -273,120 +314,46 @@ export function createICalendar(events, { method = METHOD.PUBLISH } = {}) {
 	}
 }
 
-/**
- * Creates an iCalendar event string.
- *
- * @param {Object} options - Options for creating the iCalendar event.
- * @param {string} options.method - The method for the iCalendar event (e.g., REQUEST, PUBLISH).
- * @param {string} options.status - The status of the event (e.g., CONFIRMED, TENTATIVE).
- * @param {string} options.transparency - The transparency of the event (e.g., OPAQUE, TRANSPARENT).
- * @param {string} options.classification - The classification of the event (e.g., PUBLIC, PRIVATE).
- * @param {string} options['@id'] - The unique identifier for the event.
- * @param {number} options.sequence - The sequence number for the event.
- * @param {string} options.name - The name or summary of the event.
- * @param {Date|string|number} options.startDate - The start date and time of the event.
- * @param {Date|string|number} options.endDate - The end date and time of the event.
- * @param {string} options.description - The description of the event.
- * @param {string|object} options.location - The location of the event.
- * @param {string|URL} options.url - The URL associated with the event.
- * @param {Object} options.organizer - The organizer of the event.
- * @param {Array} options.attendees - An array of attendees for the event.
- * @param {Date|string|number} options.modified - The last modified date of the event.
- * @returns {string} - The iCalendar event string.
- */
 export function createICalEvent({
 	method = METHOD.REQUEST,
-	status = STATUS.CONFIRMED,
-	transparency = TRANSPARENCY.OPAQUE,
-	classification = CLASSIFICATION.PUBLIC,
-	'@id': uid = crypto.randomUUID(),
-	sequence = 0,
-	name,
-	description,
-	startDate,
-	endDate,
-	location,
-	url,
-	organizer,
-	attendees = [],
-	modified = new Date(),
+	...event
 }) {
-	return createICalendar([{
-		method , status, transparency, classification, '@id': uid, sequence, name,
-		description, startDate, endDate, location, url, organizer, attendees, modified,
-	}], { method });
+	return createICalendar([event], { method });
 }
 
-export function createICalEventQR({
-	name,
-	startDate,
-	endDate,
-	description,
-	location,
-	size,
-	margin,
-	format,
-	color,
-	bgColor,
-	ecc,
-}) {
-	const str = formatLines(createEvent({
-		name, startDate, endDate, description, location, sequence: null,
-		classification: null, transparency: null, status: null,
-	}));
-
-	// QR Events only get the event info, not whole calendar
-	const data = str
-		// Fix Google Calendar not respecting UTC via "Z"
-		.replace(/^DTSTART:\d+T\d+Z$/m, 'DTSTART:' + formatDate(new Date(startDate)))
-		.replace(/^DTEND:\d+T\d+Z$/m, 'DTEND:' + formatDate(new Date(endDate)));
-
-	return createQRCode(data, { size, margin, format, color, bgColor, ecc });
+export function createICalFile(events, {
+	filename = 'events.ics',
+	method = METHOD.PUBLISH,
+	type = ICAL_MIME,
+} = {}) {
+	if (typeof filename !== 'string' || filename.length === 0) {
+		throw new TypeError('Filename must be a non-empty string.');
+	} else if (! Array.isArray(events) || events.length === 0) {
+		throw new TypeError('Events must be a non-empty array of event objects.');
+	} else if (typeof method !== 'string' || method.length === 0) {
+		throw new TypeError('Method must be a non-empty string.');
+	} else if (! filename.endsWith(ICAL_EXT)) {
+		return createICalFile(events, { filename: `filename${ICAL_EXT}`, method, type });
+	} else {
+		const iCal = createICalendar(events, { method });
+		return new File([iCal], filename, { type });
+	}
 }
 
 export function createICalEventFile({
-	method = METHOD.REQUEST,
-	status = STATUS.CONFIRMED,
-	transparency = TRANSPARENCY.OPAQUE,
-	classification = CLASSIFICATION.PUBLIC,
-	'@id': uid = crypto.randomUUID(),
-	sequence = 0,
-	name,
-	startDate,
-	endDate,
-	description,
-	location,
-	url,
-	modified = new Date(),
-	organizer,
-	attendees,
 	filename,
+	method = METHOD.PUBLISH,
+	type = ICAL_MIME,
+	startDate,
+	...event
 }) {
 	if (typeof startDate === 'string' || typeof startDate === 'number') {
-		return createICalEventFile({
-			method, status, transparency, classification, '@id': uid, sequence,
-			name, startDate: new Date(startDate), endDate, description, location,
-			url, organizer, attendees, modified, filename,
-		});
+		return createICalEventFile({ filename, method, type, startDate: new Date(startDate), ...event });
 	} else if (typeof filename !== 'string' || filename.length === 0) {
-		return createICalEventFile({
-			method, status, transparency, classification, '@id': uid, sequence,
-			name, startDate: new Date(startDate), endDate, description, location,
-			url, organizer, attendees, modified, filename: `${startDate.toISOString()} ${name.replaceAll(/[^A-Za-z0-9]+/g, '-')}${ICAL_EXT}`,
-		});
+		return createICalEventFile({ filename: `${startDate.toISOString()} ${name.replaceAll(/[^A-Za-z0-9]+/g, '-')}${ICAL_EXT}`, method, type, startDate, ...event,});
 	} else if (! filename.endsWith(ICAL_EXT)) {
-		return createICalEventFile({
-			method, status, transparency, classification, '@id': uid, sequence,
-			name, startDate: startDate, endDate, description, location,
-			url, organizer, attendees, modified, filename: `${filename}${ICAL_EXT}`,
-		});
+		return createICalEventFile({ filename: `${filename}${ICAL_EXT}`, method, type, startDate, ...event });
 	} else {
-		const iCal = createICalEvent({
-			method, status, transparency, classification, '@id': uid, sequence,
-			name, startDate, endDate, description, location, url, organizer,
-			attendees, modified,
-		});
-
-		return new File([iCal], filename, { type: ICAL_MIME });
+		return createICalFile([{ startDate, ...event }], { filename, method, type });
 	}
 }

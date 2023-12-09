@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.10] - 2023-12-09
+
+### Added
+- Add HTML iCal description support
+- Add iCal support for multiple events
+- Add functions to get WFD & KRV events as iCal files
+
+### Changed
+- Move `createICalEventQR()` to `qr.js` (for compatibility with server environments)
+
 ## [v0.2.9] - 2023-12-3
 
 ### Added
