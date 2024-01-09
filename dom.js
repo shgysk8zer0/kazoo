@@ -1,5 +1,5 @@
 /**
- * @copyright 2021-2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2021-2024 Chris Zuber <admin@kernvalley.us>
  */
 import { signalAborted } from './abort.js';
 import { addListener, listen } from './events.js';
@@ -7,6 +7,7 @@ import { getDeferred, isAsync } from './promises.js';
 import { isHTML, isTrustPolicy } from './trust.js';
 import { HTML } from '@shgysk8zer0/consts/mimes.js';
 import { errorToEvent, callOnce, isIterable } from './utility.js';
+import { nodeIteratorToIterator } from './iter.js';
 import { data as setData, css as setCss, attr as setAttr, aria as setAria } from './attrs.js';
 
 export const readyStates = ['loading', 'interactive', 'complete'];
@@ -32,6 +33,22 @@ export function query(what, base = document) {
 	} else {
 		throw new TypeError('Invalid "what" given to query()');
 	}
+}
+
+export function lazyQuery(selector, base = document.documentElement) {
+	return createDOMIterator({
+		root: base,
+		whatToShow: NodeFilter.SHOW_ELEMENT,
+		filter: el => el.matches(selector),
+	});
+}
+
+export function createDOMIterator({
+	root = document.documentElement,
+	whatToShow = NodeFilter.SHOW_ELEMENT,
+	filter,
+} = {}) {
+	return nodeIteratorToIterator(document.createNodeIterator(root, whatToShow, filter));
 }
 
 export function nth(what, n, { base } = {}) {

@@ -1,58 +1,67 @@
 import { ICAL as ICAL_MIME } from '@shgysk8zer0/consts/mimes.js';
 import { ICAL as ICAL_EXT } from '@shgysk8zer0/consts/exts.js';
+import { separateString } from './utility.js';
 
 export const VERSION = '1.0.0';
 
 export const METHOD = {
-	REQUEST: 'REQUEST',
-	REPLAY: 'REPLY',
-	PUBLISH: 'PUBLISH',
-	ADD: 'ADD',
-	CANCEL: 'CANCEL',
-	REFRESH: 'REFRESH',
-	DECLINECOUNTER: 'DECLINECOUNTER',
+	'REQUEST': 'REQUEST',
+	'REPLAY': 'REPLY',
+	'PUBLISH': 'PUBLISH',
+	'ADD': 'ADD',
+	'CANCEL': 'CANCEL',
+	'REFRESH': 'REFRESH',
+	'DECLINECOUNTER': 'DECLINECOUNTER',
 };
 
 export const STATUS = {
-	TENTATIVE: 'TENTATIVE',
-	CONFIRMED: 'CONFIRMED',
-	CANCELLED: 'CANCELLED',
+	'TENTATIVE': 'TENTATIVE',
+	'CONFIRMED': 'CONFIRMED',
+	'CANCELLED': 'CANCELLED',
+};
+
+export const EVENT_STATUS_TYPE = {
+	'CANCELLED': 'EventCancelled',
+	'MOVED_ONLINE': 'EventMovedOnline',
+	'POSTPONED': 'EventPostponed',
+	'RESCHEDULED': 'EventRescheduled',
+	'SCHEDULED': 'EventScheduled',
 };
 
 export const TRANSPARENCY = {
-	OPAQUE: 'OPAQUE',
-	TRANSPARENT: 'TRANSPARENT',
+	'OPAQUE': 'OPAQUE',
+	'TRANSPARENT': 'TRANSPARENT',
 };
 
 export const CLASSIFICATION = {
-	PUBLIC: 'PUBLIC',
-	PRIVATE: 'PRIVATE',
-	CONFIDENTIAL: 'CONFIDENTIAL',
+	'PUBLIC': 'PUBLIC',
+	'PRIVATE': 'PRIVATE',
+	'CONFIDENTIAL': 'CONFIDENTIAL',
 };
 
 export const ATTENDEE_STATUS = {
-	NEEDS_ACTION: 'NEEDS-ACTION',
-	ACCEPTED: 'ACCEPTED',
-	DECLINED: 'DECLINED',
-	TENTATIVE: 'TENTATIVE',
-	DELEGATED: 'DELEGATED',
-	COMPLETED: 'COMPLETED',
-	IN_PROCESS: 'IN-PROCESS',
+	'NEEDS_ACTION': 'NEEDS-ACTION',
+	'ACCEPTED': 'ACCEPTED',
+	'DECLINED': 'DECLINED',
+	'TENTATIVE': 'TENTATIVE',
+	'DELEGATED': 'DELEGATED',
+	'COMPLETED': 'COMPLETED',
+	'IN_PROCESS': 'IN-PROCESS',
 };
 
 export const USER_TYPE = {
-	INDIVIDUAL: 'INDIVIDUAL',
-	GROUP: 'GROUP',
-	RESOURCE: 'RESOURCE',
-	ROOM: 'ROOM',
-	UNKOWN: 'UNKNOWN',
+	'INDIVIDUAL': 'INDIVIDUAL',
+	'GROUP': 'GROUP',
+	'RESOURCE': 'RESOURCE',
+	'ROOM': 'ROOM',
+	'UNKOWN': 'UNKNOWN',
 };
 
 export const ROLE = {
-	CHAIR: 'CHAIR',
-	REQ_PARTICIPANT: 'REQ-PARTICIPANT',
-	OPT_PARTICIPANT: 'OPT-PARTICIPANT',
-	NON_PARTICIPANT: 'NON-PARTICIPANT',
+	'CHAIR': 'CHAIR',
+	'REQ_PARTICIPANT': 'REQ-PARTICIPANT',
+	'OPT_PARTICIPANT': 'OPT-PARTICIPANT',
+	'NON_PARTICIPANT': 'NON-PARTICIPANT',
 };
 
 const ESCAPE_CHARS = {
@@ -65,6 +74,8 @@ const ESCAPE_CHARS = {
 };
 
 const CRLF = '\r\n';
+const CR = '\r';
+const LF = '\n';
 const ICAL_VERSION = '2.0';
 const BEGIN_CALENDAR = 'BEGIN:VCALENDAR';
 const END_CALENDAR = 'END:VCALENDAR';
@@ -74,11 +85,16 @@ const ESCAPE_REGEXP = new RegExp(`[${Object.keys(ESCAPE_CHARS).join('')}]`, 'g')
 
 const escape = str => str.toString().trim().replaceAll(ESCAPE_REGEXP, char => ESCAPE_CHARS[char]);
 
+const parseDate = date => typeof date === 'string' ?
+	new Date(date.replace(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/, '$1-$2-$3T$4:$5:$6')).toISOString()
+	: null;
+
 function* lineGenerator(str) {
 	if (str.length < 76) {
 		yield str;
 	} else {
 		yield str.substring(0, 75);
+
 		for (let i = 75; i < str.length; i +=74) {
 			yield ' ' + str.substring(i, i + 74);
 		}
@@ -129,6 +145,63 @@ function addressObjectToString({
 		return [name, streetAddress, addressLocality, [addressRegion, postalCode].join(' ').trim(), addressCountry]
 			.filter(comp => (typeof comp === 'string' && comp.length !== 0) || typeof comp === 'number' && !Number.isNaN(comp))
 			.join(', ');
+	}
+}
+
+function isStatusType(str) {
+	return Object.values(EVENT_STATUS_TYPE).includes(str);
+}
+
+function isStatus(str) {
+	return Object.values(STATUS).includes(str);
+}
+
+function statusTypeToStatus(eventStatusType) {
+	switch (eventStatusType) {
+		case EVENT_STATUS_TYPE.SCHEDULED:
+		case EVENT_STATUS_TYPE.MOVED_ONLINE:
+			return STATUS.CONFIRMED;
+
+		case EVENT_STATUS_TYPE.CANCELLED:
+		case EVENT_STATUS_TYPE.POSTPONED:
+			return STATUS.CANCELLED;
+	}
+}
+
+function statusToStatusType(status) {
+	switch (status) {
+		case STATUS.CONFIRMED:
+			return EVENT_STATUS_TYPE.SCHEDULED;
+
+		case STATUS.CANCELLED:
+			return EVENT_STATUS_TYPE.CANCELLED;
+
+		case STATUS.TENTATIVE:
+			return EVENT_STATUS_TYPE.SCHEDULED;
+	}
+}
+
+function getStatus(str) {
+	if (str in STATUS) {
+		return STATUS[str];
+	} else if (str in EVENT_STATUS_TYPE) {
+		return statusTypeToStatus(EVENT_STATUS_TYPE[str]);
+	} else if (isStatus(str)) {
+		return str;
+	} else {
+		return STATUS.CONFIRMED;
+	}
+}
+
+function getStatusType(str) {
+	if (str in STATUS) {
+		return statusToStatusType(STATUS[str]);
+	} else if (str in EVENT_STATUS_TYPE) {
+		return EVENT_STATUS_TYPE[str];
+	} else if (isStatusType(str)) {
+		return str;
+	} else {
+		return EVENT_STATUS_TYPE.SCHEDULED;
 	}
 }
 
@@ -203,7 +276,7 @@ export function formatLines(lines) {
  * @returns {string} - The iCalendar event string.
  */
 export function createEvent({
-	status = STATUS.CONFIRMED,
+	status = EVENT_STATUS_TYPE.SCHEDULED,
 	transparency = TRANSPARENCY.OPAQUE,
 	classification = CLASSIFICATION.PUBLIC,
 	'@id': uid = crypto.randomUUID(),
@@ -236,7 +309,7 @@ export function createEvent({
 			url, organizer, attendees, created, lastModified,
 		});
 	} else if (endDate instanceof Date && ! (endDate.getTime() > startDate.getTime())) {
-		throw new Error('End Date must be after Start  Date.');
+		throw new Error('End Date must be after Start Date.');
 	} else if (typeof lastModified === 'string' || typeof lastModified === 'number') {
 		return createEvent({
 			status, transparency, classification, '@id': uid, sequence,
@@ -257,7 +330,7 @@ export function createEvent({
 			`UID:${escape(uid)}`,
 			typeof sequence === 'number' && ! Number.isNaN(sequence)
 				? `SEQUENCE:${Math.min(0, sequence)}` : undefined,
-			typeof status === 'string' ? `STATUS:${escape(status)}` : undefined,
+			typeof status === 'string' ? `STATUS:${getStatus(escape(status))}` : undefined,
 			typeof transparency === 'string' ? `TRANSP:${escape(transparency)}` : undefined,
 			typeof classification === 'string' ? `CLASS:${escape(classification)}` : undefined,
 			`SUMMARY:${escape(name.trim())}`,
@@ -355,5 +428,102 @@ export function createICalEventFile({
 		return createICalEventFile({ filename: `${filename}${ICAL_EXT}`, method, type, startDate, ...event });
 	} else {
 		return createICalFile([{ startDate, ...event }], { filename, method, type });
+	}
+}
+
+export function parseICSEvent(str, { context = 'https://schema.org', type = 'Event' } = {}) {
+	try {
+		const entries = str.replaceAll(CR, '').replaceAll(LF + ' ', '')
+			.split(LF)
+			.map(line => {
+				const [field, value] = separateString(line, ':');
+
+				if (field.includes(';')) {
+					const [fieldName, ...props] = field.split(';');
+					const values = Object.fromEntries(props.map(prop => separateString(prop, '=')));
+
+					switch (fieldName) {
+						case 'DTSTART':
+						case 'DTEND':
+						case 'DTSTAMP':
+						case 'CREATED':
+						case 'LAST-MODIFIED':
+							return [fieldName, value];
+
+						case 'ORGANIZER':
+							return [
+								fieldName, {
+									'@type': 'Organization',
+									email: value.toString().replace('mailto:', ''),
+									name: values.CN,
+								}
+							];
+
+						case 'ATTENDEE':
+							return [
+								fieldName, {
+									'@type': typeof values.CUTYPE === 'string' &&  values.CUTYPE === 'GROUP'
+										? 'Organization'
+										: 'Person',
+									email: value.toString().replace('mailto:', ''),
+									name: values.CN,
+								}
+							];
+
+						default:
+							return [fieldName, {...values, value }];
+					}
+				} else {
+					return [field, value];
+				}
+			});
+
+		const fields = Object.fromEntries(entries.filter(([k, v]) => k.length !==0 && !(typeof v === 'string' && v.length === 0)));
+		const { SUMMARY, DESCRIPTION, LOCATION, DTSTART, DTEND, UID, STATUS, URL, ORGANIZER, ...rest } = fields;
+		return {
+			'@context': context,
+			'@type': type,
+			'@id': UID,
+			name: SUMMARY,
+			eventStatus: getStatusType(STATUS),
+			description: DESCRIPTION,
+			url: URL,
+			location: typeof LOCATION === 'string' && LOCATION.length !== 0 ? {
+				'@type': 'Place',
+				address: LOCATION,
+			} : undefined,
+			organizer: ORGANIZER,
+			// `Object.fromEntries()` will remove duplicate `ATTENDEE` fields
+			attendee: entries.reduce((list, [name, val]) => {
+				if (name === 'ATTENDEE') {
+					list.push(val);
+				}
+
+				return list;
+			}, []),
+			startDate: parseDate(DTSTART),
+			endDate: parseDate(DTEND),
+			rest,
+		};
+	} catch(err) {
+		console.error(err);
+	}
+}
+
+export function parseICS(str) {
+	const [, ...events] = str.split(BEGIN_EVENT)
+		.filter(event => typeof event === 'string')
+		.map(parseICSEvent)
+		.filter(event => typeof event !== 'undefined');
+	return events;
+}
+
+export async function parseICSFile(file) {
+	if (! (file instanceof File)) {
+		throw new TypeError('Not a file.');
+	} else if (! (file.name.endsWith(ICAL_EXT) || file.type === ICAL_MIME)) {
+		throw new TypeError(`${file.name} is not an iCal file.`);
+	} else {
+		return parseICS(await file.text());
 	}
 }

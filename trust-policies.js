@@ -4,6 +4,9 @@
 import { createPolicy } from './trust.js';
 import { callOnce } from './utility.js';
 import { HTML } from '@shgysk8zer0/consts/mimes.js';
+export { getYouTubePolicy } from'./google/policies.js';
+
+
 // @todo Remove use of `Sanitizer.getDefaultConfiguration()`
 const {
 	allowElements, allowAttributes, allowComments, blockElements, dropAttributes,
@@ -257,6 +260,7 @@ export const getDataScriptURLPolicy = callOnce(() => createPolicy('data#script-u
 	}
 }));
 
+// Disqus embeds are created via their script & must use default policy :(
 export const getDefaultPolicyWithDisqus = callOnce(() => {
 	return createPolicy('default', {
 		createHTML: input => sanitizeHTML(input, {
@@ -290,16 +294,6 @@ export const getKRVPolicy = callOnce(() => {
 		}
 	});
 });
-
-export const getYouTubePolicy = callOnce(() => createPolicy('youtube#embed', {
-	createScriptURL: input => {
-		if (isYouTubeEmbed(input)) {
-			return input;
-		} else {
-			throw new TypeError(`Invalid YouTube URL: ${input}`);
-		}
-	}
-}));
 
 export const getGooglePolicy = callOnce(() => createPolicy('ga#script-url', {
 	createHTML: createEmptyHTML,

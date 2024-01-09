@@ -1,3 +1,5 @@
+const formatDate = date => date.toISOString().replaceAll(/[^\dZT]/g, '');
+
 export function createGoogleCalendarEventLink({ title, description, start, end, location }) {
 	if (typeof title !== 'string') {
 		throw new TypeError('Title must be a string.');
@@ -20,7 +22,7 @@ export function createGoogleCalendarEventLink({ title, description, start, end, 
 		url.searchParams.set('action', 'TEMPLATE');
 		url.searchParams.set('text', title);
 		url.searchParams.set('details', description);
-		url.searchParams.set('dates', `${start.toISOString().replaceAll(/[^\dZT]/g, '')}/${end.toISOString().replaceAll(/[^\dZT]/g, '')}`);
+		url.searchParams.set('dates', `${formatDate(start)}/${formatDate(end)}`);
 
 		if (typeof location === 'string') {
 			url.searchParams.set('location', location);

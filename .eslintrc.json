@@ -43,6 +43,11 @@
       "TrustedScriptURL": "readonly",
       "TrustedTypePolicy": "readonly",
       "ElementInternals": "readonly",
-      "queueMicrotask": "readonly"
+      "queueMicrotask": "readonly",
+      "BigInt": "readonly",
+      "BigUint64Array": "readonly",
+      "BigInt64Array": "readonly",
+      "Record": "readonly",
+      "Tuple": "readonly"
     }
 }

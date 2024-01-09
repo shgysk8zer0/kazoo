@@ -6,6 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.3.0] - 2024-01-08
+
+### Added
+- Lazy DOM operations using `Iterator.from(document.createNodeIterator()))`
+- Iterator helper module
+- Wider variety of RNG in math module (8, 16, 32, & 64-bit - signed & unsigned)
+- Support for `BigInt` in math module
+- Google Calendar & Maps `TrustedTypePolicy`
+- Embed/`<iframe>` for Google Calendar
+- Add `immutable.js`, with `deepFreeze()` & Record/Tuple via `getImmutable()`
+
+### Changed
+- Improve various functions in `math.js`
+- Add support for `BigInt`s in `factorial()` & `choose()` in math module
+- Factorial can now work with numbers > 18
+- Update ESLint rules
+
 ## [v0.2.10] - 2023-12-09
 
 ### Added
