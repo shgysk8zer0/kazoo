@@ -1,5 +1,5 @@
 /**
- * @copyright 2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2023-2024 Chris Zuber <admin@kernvalley.us>
  */
 import { randomInt } from './math.js';
 import { isAsyncFunction, getDeferred } from './promises.js';
@@ -174,7 +174,6 @@ export function getType(thing) {
 			} else if ('prototype' in thing) {
 				return  getType(thing.prototype);
 			} else {
-				console.log(thing);
 				return 'Unknown Object';
 			}
 
@@ -408,23 +407,32 @@ export function random(arr) {
 	}
 }
 
-export function getSimpleUID({ radix = 36, padding = null, seperator = '-', timestamp = Date.now() } = {}) {
+export function getSimpleUID({ radix = 36, padding = null, separator = '-', timestamp = Date.now() } = {}) {
 	const date = timestamp.toString(radix);
 	const random = crypto.getRandomValues(new Uint32Array(1))[0].toString(radix);
 
 	if (typeof padding !== 'string' || padding.length === 0) {
-		return `${date}${seperator}${random}`;
+		return `${date}${separator}${random}`;
 	} else if (padding.length !== 1) {
 		throw new TypeError('Padding must be a single character');
 	} else {
 		const length = Math.ceil(LOG_MAX_SAFE_INTEGER / Math.log(radix));
-		return `${date.padStart(length, padding)}${seperator}${random.padStart(length, padding)}`;
+		return `${date.padStart(length, padding)}${separator}${random.padStart(length, padding)}`;
 	}
 }
 
-export function parseSimpleUID(uid, { radix = 36, seperator = '-' } = {}) {
-	const [date, random] = uid.split(seperator).map(str => parseInt(str, radix));
+export function parseSimpleUID(uid, { radix = 36, separator = '-' } = {}) {
+	const [date, random] = uid.split(separator).map(str => parseInt(str, radix));
 	return { date: new Date(date), random };
+}
+
+export function separateString(str, char = ',') {
+	if (typeof str !== 'string') {
+		throw new TypeError('Not a string.');
+	} else {
+		const i = str.indexOf(char);
+		return [str.substring(0, i),  str.substring(i + 1)];
+	}
 }
 
 export const toSpinalCase = str => str.replace(/[A-Z]/g, (m, i) => i === 0

@@ -13,16 +13,16 @@
 			style-src 'self' https://unpkg.com/ blob:;
 			font-src cdn.kernvalley.us;
 			form-action 'none';
-			frame-src https://www.youtube-nocookie.com/embed/;
+			frame-src https://www.youtube-nocookie.com/embed/ https://calendar.google.com/calendar/embed https://www.google.com/maps/embed;
 			object-src 'none';
 			media-src 'none';
 			child-src 'self';
 			worker-src 'self';
 			frame-ancestors 'none';
-			connect-src 'self' https://unpkg.com/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json https://whiskeyflatdays.com/events.json;
+			connect-src 'self' https://unpkg.com/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json https://events.kernvalley.us/cal/krv-events.ics https://whiskeyflatdays.com/events.json;
 			img-src * data: blob:;
 			require-trusted-types-for 'script';
-			trusted-types empty#html empty#script default sanitizer-raw#html trust-raw#html youtube#embed github-user#html github-repo#html blob#script-url;
+			trusted-types empty#html empty#script default sanitizer-raw#html trust-raw#html youtube#script-url github-user#html github-repo#html blob#script-url goog-cal#script-url goog-maps#script-url;
 			upgrade-insecure-requests;"
 		/>
 		<title>Kazoo</title>
@@ -32,8 +32,8 @@
 				"imports": {
 					"@shgysk8zer0/kazoo/": "../",
 					"@shgysk8zer0/konami": "https://unpkg.com/@shgysk8zer0/konami@1.0.10/konami.js",
-					"@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills@0.2.7/all.min.js",
-					"@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills@0.2.7/",
+					"@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.0/all.min.js",
+					"@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.0/",
 					"@shgysk8zer0/consts/": "https://unpkg.com/@shgysk8zer0/consts@1.0.8/",
 					"@shgysk8zer0/jswaggersheets": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.0.4/swagger.js",
 					"@shgysk8zer0/jswaggersheets/": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.0.4/",
@@ -52,7 +52,7 @@
 				"scope": {}
 			}
 		</script>
-		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-SAPfArSiEtD95cIAxDiBbdtv4qGRVFnGzjvMeE8dL3lpt/As4xhrrZK+C6cI6QJn" src="https://unpkg.com/@shgysk8zer0/polyfills@0.2.7/all.min.js" fetchpriority="high"></script>
+		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-h2kgNESJV1KN7BmHtXZv1j5WMcwFojESsbaNydwul3t6bqHOmzVMDaDXAEe6XLC+" src="https://unpkg.com/@shgysk8zer0/polyfills@0.3.0/all.min.js" fetchpriority="high"></script>
 		<script src="/harden.js" referrerpolicy="no-referrer" defer=""></script>
 		<script type="module" src="./js/index.js" referrerpolicy="no-referrer"></script>
 		<link rel="stylesheet" href="./css/index.css" referrerpolicy="no-referrer" media="all" />
