@@ -1,11 +1,11 @@
 /**
- * @copyright 2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2023-2024 Chris Zuber <admin@kernvalley.us>
  */
 
 import { createIframe } from '../elements.js';
 import { isTrustPolicy } from '../trust.js';
 import { GOOGLE_CALENDAR } from './urls.js';
-import { createGoogleCalendarPolicy, GOOGLE_CALENDAR_POLICY } from './policies.js';
+import { getGoogleCalendarPolicy, GOOGLE_CALENDAR_POLICY } from './policies.js';
 
 // Hate that this requires `allow-same-origin`, but it does...
 const sandbox = ['allow-scripts', 'allow-same-origin', 'allow-popups', 'allow-popups-to-escape-sandbox'];
@@ -107,7 +107,7 @@ export function createGoogleCalendar(calendarId, {
 	dataset,
 	styles,
 	animation,
-	policy = createGoogleCalendarPolicy(),
+	policy = getGoogleCalendarPolicy(),
 	events: { capture, passive, once, signal, ...events } = {},
 	...attrs
 } = {}) {
