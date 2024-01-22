@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.3.2] - 2024-01-22
+
+### Added
+- `createWFDMayorEvents()` to embed `https://whsikeyflatdays.com/mayors/embed/`
+- `getWFDMayorEventsICalFile()` to create iCalendar files from WF Mayor Candidate Events
+- `resize()` as a wrapper around `ResizeObserver`
+
+### Changed
+- Update/improve `toSpinalCase()` & `toCamelCase()`
+- Allow WF Mayor Events embed URL in `krv#embed` policy
+- Update CSP and TrustedTypes Policies & importmap
+
 ## [v0.3.1]  2024-01-12
 
 ### Fixed
