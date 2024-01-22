@@ -1,5 +1,5 @@
 /**
- * @copyright 2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2023-2024 Chris Zuber <admin@kernvalley.us>
  */
 import { createPolicy } from '../trust.js';
 
@@ -7,6 +7,7 @@ export const trustedURLs = {
 	maps: new URL('/embed', 'https://maps.kernvalley.us'),
 	events: new URL('/embed/', 'https://events.kernvalley.us'),
 	wfdEvents: new URL('/embed/', 'https://whiskeyflatdays.com'),
+	wfdMayorEvents: new  URL('/mayors/embed/', 'https://whiskeyflatdays.com'),
 };
 
 export const policy = createPolicy('krv#embed', {

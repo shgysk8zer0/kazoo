@@ -372,7 +372,7 @@ export function debounce(callback, { delay = 17, thisArg } = {}) {
 	if (! (callback instanceof Function)) {
 		throw new TypeError('Callback must be a function');
 	} else if (! Number.isFinite(delay) || delay < 0) {
-		throw new TypeError('Timeout must be a positive intiger');
+		throw new TypeError('Timeout must be a positive integer');
 	} else {
 		let to;
 		return function(...args) {
@@ -435,13 +435,19 @@ export function separateString(str, char = ',') {
 	}
 }
 
-export const toSpinalCase = str => str.replace(/[A-Z]/g, (m, i) => i === 0
-	? m.toLowerCase()
-	: `-${m.toLowerCase()}`);
+export const toSpinalCase = str => typeof str === 'string' && str.trim().length === 0 ? '' : str.toString()
+	.replaceAll(/(?<=\w)(?:[^-\w_ ]+)(?=\w)/g, '') // Strip out inter-word special chars
+	.replaceAll(/[A-Z]+/g, str => ` ${str.toLowerCase()}`) // Handle uppercase chars
+	.replaceAll(/[^a-z\d ]+/g, ' ') // Convert all remaining special chars
+	.trim() // Removing any leading or trailing spaces
+	.replaceAll(/ +/g, '-'); // Replace all remaining spaces with single hyphens
 
-export const toCamelCase = str => str.replace(/-[a-z\d]/g, m => m.substr(1).toUpperCase());
+export const slugify = toSpinalCase;
 
-export const ucFirst = str => str.substr(0, 1).toUpperCase() + str.substr(1);
+export const toCamelCase = str => toSpinalCase(str)
+	.replaceAll(/-[a-z]/g, c => c.substring(1).toUpperCase());
+
+export const ucFirst = str => str.toString().substring(0, 1).toUpperCase() + str.substring(1);
 
 export async function filterKeys(obj, keys) {
 	return Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));

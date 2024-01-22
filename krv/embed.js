@@ -1,5 +1,5 @@
 /**
- * @copyright 2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2023-2024 Chris Zuber <admin@kernvalley.us>
  */
 import { createIframe } from '../elements.js';
 import { policy, trustedURLs, trustPolicies } from './policy.js';
@@ -113,6 +113,40 @@ export function createWFDEvents({
 
 	if (images) {
 		src.searchParams.set('images', '');
+	}
+
+	return createIframe(src.href, {
+		height, width, referrerPolicy, fetchPriority, loading, title, classList,
+		id, policy, sandbox: ['allow-scripts', 'allow-popups'], styles, dataset,
+		slot, part, credentialless,
+	});
+}
+
+export function createWFDMayorEvents({
+	theme, mayor, heading, address = false, description = true, width, height, loading = 'lazy',
+	fetchPriority = 'auto', title, id, classList, referrerPolicy = 'no-referrer',
+	credentialless = true, styles, dataset, slot, part,
+} = {}) {
+	const src = new URL(trustedURLs.wfdMayorEvents.href);
+
+	if (typeof theme === 'string') {
+		src.searchParams.set('theme', theme);
+	}
+
+	if (typeof mayor === 'string') {
+		src.searchParams.set('mayor', mayor);
+	}
+
+	if (typeof heading === 'string') {
+		src.searchParams.set('heading', heading);
+	}
+
+	if (address) {
+		src.searchParams.set('address', '');
+	}
+
+	if (description) {
+		src.searchParams.set('description', '');
 	}
 
 	return createIframe(src.href, {
