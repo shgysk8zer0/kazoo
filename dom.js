@@ -554,7 +554,7 @@ export function intersect(what, callback, { root, rootMargin, signal, threshold 
 		throw new DOMException('IntersectionObserver not supported');
 	} else {
 		const observer = new IntersectionObserver((entries, observer) => {
-			entries.forEach((entry, index) => callback.apply(null, [entry, observer, index]));
+			entries.forEach((entry, index) => callback.apply(observer, [entry, observer, index]));
 		}, { root, rootMargin, threshold });
 
 		each(what, item => observer.observe(item));
@@ -582,6 +582,24 @@ export function mutate(what, callback, options = {}) {
 		return observer;
 	} else {
 		throw new Error('MutationObserver not supported');
+	}
+}
+
+export function resize(what, callback, { signal, base = document } = {}) {
+	if (signal instanceof AbortSignal && signal.aborted) {
+		return query(what, base);
+	} else {
+		const observer = new ResizeObserver((entries, observer) => {
+			entries.forEach(entry => callback.apply(observer, [entry, observer]));
+		});
+
+		each(what, el => observer.observe(el), { base });
+
+		if (signal instanceof AbortSignal) {
+			signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+		}
+
+		return observer;
 	}
 }
 

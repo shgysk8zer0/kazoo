@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-trusted-policies="empty#html empty#script custom#html sanitizer-raw#html blob#script-url  youtube#embed">
+<html lang="en" dir="ltr" data-trusted-policies="empty#html empty#script custom#html sanitizer-raw#html blob#script-url  youtube#script-url krv#embed">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -13,16 +13,16 @@
 			style-src 'self' https://unpkg.com/ blob:;
 			font-src cdn.kernvalley.us;
 			form-action 'none';
-			frame-src https://www.youtube-nocookie.com/embed/ https://calendar.google.com/calendar/embed https://www.google.com/maps/embed;
+			frame-src https://www.youtube-nocookie.com/embed/ https://calendar.google.com/calendar/embed https://www.google.com/maps/embed https://whiskeyflatdays.com/embed/ https://whiskeyflatdays.com/mayors/embed/;
 			object-src 'none';
 			media-src 'none';
 			child-src 'self';
 			worker-src 'self';
 			frame-ancestors 'none';
-			connect-src 'self' https://unpkg.com/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json https://events.kernvalley.us/cal/krv-events.ics https://whiskeyflatdays.com/events.json;
+			connect-src 'self' https://unpkg.com/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json https://events.kernvalley.us/cal/krv-events.ics https://whiskeyflatdays.com/events.json https://whiskeyflatdays.com/mayors/events.json;
 			img-src * data: blob:;
 			require-trusted-types-for 'script';
-			trusted-types empty#html empty#script default sanitizer-raw#html trust-raw#html youtube#script-url github-user#html github-repo#html blob#script-url goog-cal#script-url goog-maps#script-url;
+			trusted-types empty#html empty#script default sanitizer-raw#html trust-raw#html youtube#script-url github-user#html github-repo#html blob#script-url goog-cal#script-url goog-maps#script-url krv#embed;
 			upgrade-insecure-requests;"
 		/>
 		<title>Kazoo</title>
@@ -39,7 +39,7 @@
 					"@shgysk8zer0/jswaggersheets/": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.0.4/",
 					"@shgysk8zer0/http-status": "https://unpkg.com/@shgysk8zer0/http-status@1.0.2/http-status.js",
 					"@shgysk8zer0/components/": "https://unpkg.com/@shgysk8zer0/components@0.0.12/",
-					"@kernvalley/components/": "https://unpkg.com/@kernvalley/components@1.0.2/",
+					"@kernvalley/components/": "https://unpkg.com/@kernvalley/components@1.1.2/",
 					"@webcomponents/custom-elements": "https://unpkg.com/@webcomponents/custom-elements@1.6.0/custom-elements.min.js",
 					"leaflet": "https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js",
 					"firebase/": "https://www.gstatic.com/firebasejs/9.22.2/",
