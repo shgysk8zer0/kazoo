@@ -31,3 +31,35 @@ export function createGoogleCalendarEventLink({ title, description, start, end, 
 		return url.toString();
 	}
 }
+
+export function getGoogleMapsURL({ latitude, longitude }) {
+	return new URL(`https://google.com/maps/place/${latitude}/${longitude}/`);
+}
+
+export function openInGoogleMaps(coords, target = '_blank', {
+	noreferrer = true,
+	noopener = true,
+	popup = false,
+	height = NaN,
+	width = NaN,
+	top = NaN,
+	left = NaN,
+} = {}) {
+	const url = getGoogleMapsURL(coords);
+	const flags = Object.entries({ popup, noreferrer, noopener, height, width, top, left })
+		.filter(([, v]) => v !== false && v !== null && ! Number.isNaN(v))
+		.map(([k, v]) => {
+			switch (typeof v) {
+				case 'boolean':
+					return k;
+
+				case 'object':
+					return Array.isArray(v) ? v.join(' ') : v.toString();
+
+				default:
+					return `${k}=${v}`;
+			}
+		}).join(',');
+
+	open(url, target, flags);
+}
