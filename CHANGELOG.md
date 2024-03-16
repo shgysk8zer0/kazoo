@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.3.4] - 2024-03-15
+
+### Added
+- Add `keys()` & `entries()` to `KeyValueStore`
+
 ## [v0.3.3] - 2024-03-15
 
 ### Added

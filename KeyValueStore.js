@@ -112,8 +112,13 @@ export class KeyValueStore {
 		return this.#name;
 	}
 
+	async toObject() {
+		return Object.fromEntries(await this.entries());
+	}
+
+
 	async get(key, { signal } = {}) {
-		const { resolve, reject, promise } =  Promise.withResolvers();
+		const { resolve, reject, promise } = Promise.withResolvers();
 		const controller = new AbortController();
 
 		controller.signal.addEventListener('abort', ({ target }) => reject(target.reason), { once: true });
@@ -150,7 +155,7 @@ export class KeyValueStore {
 	}
 
 	async getAll(count, { signal} = {}) {
-		const { resolve, reject, promise } =  Promise.withResolvers();
+		const { resolve, reject, promise } = Promise.withResolvers();
 		const controller = new AbortController();
 
 		controller.signal.addEventListener('abort', ({ target }) => reject(target.reason), { once: true });
@@ -171,10 +176,11 @@ export class KeyValueStore {
 
 			request.addEventListener('success', ({ target }) => {
 				if (Array.isArray(target.result)) {
-					resolve(Object.fromEntries(target.result.map(({ key,  value }) => [key, value])));
+					resolve(Object.fromEntries(target.result.map(({ key, value }) => [key, value])));
 				} else {
 					resolve({});
 				}
+
 				controller.abort();
 			}, { once: true, signal: controller.signal });
 
@@ -184,6 +190,106 @@ export class KeyValueStore {
 		}
 
 		return await promise;
+	}
+
+	async keys() {
+		const { resolve, reject, promise } = Promise.withResolvers();
+		const controller = new AbortController();
+
+		try {
+			await this.#whenConnected;
+
+			const transaction = this.#db.transaction([this.#name], 'readonly');
+			const store = transaction.objectStore(this.#name);
+			const request = store.getAllKeys();
+
+			request.addEventListener('success', ({ target }) => {
+				resolve(target.result);
+				controller.abort();
+			}, { once: true, signal: controller.signal });
+
+			request.addEventListener('error', ({ target }) => {
+				reject(new Error(target.error));
+				controller.abort(target.error);
+			}, { once: true, signal: controller.signal });
+		} catch (error) {
+			reject(error);
+		}
+
+		return await promise;
+	}
+
+	async values() {
+		const { resolve, reject, promise } = Promise.withResolvers();
+		const controller = new AbortController();
+
+		controller.signal.addEventListener('abort', ({ target }) => reject(target.reason), { once: true });
+
+		try {
+			await this.ready;
+			const transaction = this.#db.transaction([this.#name], 'readonly');
+			const store = transaction.objectStore(this.#name);
+			const request = store.getAll();
+
+			request.addEventListener('success', ({ target }) => {
+				if (Array.isArray(target.result)) {
+					resolve(target.result.map(({ value }) => value));
+				} else {
+					resolve({});
+				}
+
+				controller.abort();
+			}, { once: true, signal: controller.signal });
+
+			request.addEventListener('error', ({ target }) => {
+				controller.abort(new Error(target.error));
+			}, { once: true, signal: controller.signal });
+		} catch(err) {
+			controller.abort(err);
+		}
+
+		return await promise;
+	}
+
+	async entries() {
+		return await Array.fromAsync(this);
+	}
+
+	async add(key, value, { signal } = {}) {
+		const { resolve, reject, promise } = Promise.withResolvers();
+		const controller = new AbortController();
+
+		controller.signal.addEventListener('abort', ({ target }) => reject(target.reason), { once: true });
+
+		if (typeof key !== 'string' || key.length === 0) {
+			controller.abort(new TypeError('Key is not a string.'));
+		}
+
+		if (signal instanceof AbortSignal && signal.aborted) {
+			controller.abort(signal.reason);
+		} else if (signal instanceof AbortSignal) {
+			signal.addEventListener('abort', ({ target }) => {
+				controller.abort(target.reason);
+			}, { once: true, signal: controller.signal });
+		}
+
+		if (! controller.signal.aborted) {
+			await this.ready;
+			const transaction = this.#db.transaction([this.#name], 'readwrite');
+			const store = transaction.objectStore(this.#name);
+			const request = store.add({ key, value, modified: Date.now() });
+
+			request.addEventListener('success', () => {
+				resolve();
+				controller.abort();
+			}, { once: true, signal: controller.signal });
+
+			request.addEventListener('error', ({ target }) => {
+				controller.abort(new Error(target.error));
+			}, { once: true, signal: controller.signal });
+		}
+
+		return promise;
 	}
 
 	async set(key, value, { signal } = {}) {
@@ -273,7 +379,7 @@ export class KeyValueStore {
 	}
 
 	async has(key, { signal}= {}) {
-		const { resolve, reject, promise } =  Promise.withResolvers();
+		const { resolve, reject, promise } = Promise.withResolvers();
 		const controller = new AbortController();
 
 		controller.signal.addEventListener('abort', ({ target }) => reject(target.reason), { once: true });
@@ -306,7 +412,7 @@ export class KeyValueStore {
 	}
 
 	async delete(key, { signal } = {}) {
-		const { resolve, reject, promise } =  Promise.withResolvers();
+		const { resolve, reject, promise } = Promise.withResolvers();
 		const controller = new AbortController();
 
 		controller.signal.addEventListener('abort', ({ target }) => reject(target.reason), { once: true });
@@ -343,7 +449,7 @@ export class KeyValueStore {
 	}
 
 	async clear({ signal } = {}) {
-		const { resolve, reject, promise } =  Promise.withResolvers();
+		const { resolve, reject, promise } = Promise.withResolvers();
 		const controller = new AbortController();
 
 		controller.signal.addEventListener('abort', ({ target }) => reject(target.reason), { once: true });
