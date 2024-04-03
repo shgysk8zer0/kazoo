@@ -239,30 +239,20 @@ export function text(what, text, { base } = {}) {
 
 export function html(what, text, {
 	base,
-	sanitizer,
 	policy = 'trustedTypes' in globalThis ? globalThis.trustedTypes.defaultPolicy : null,
-	allowElements,
-	allowComments,
-	allowAttributes,
-	allowCustomElements,
-	blockElements,
-	dropAttributes,
-	dropElements,
-	allowUnknownMarkup,
+	sanitizer: {
+		elements,
+		attributes,
+		comments,
+	} = {}
 } = {}) {
 	if (
 		Element.prototype.setHTML instanceof Function
-		&& typeof allowAttributes !== 'undefined'
-		&& typeof allowElements !== 'undefined'
+		&& typeof attributes !== 'undefined'
+		&& typeof elements !== 'undefined'
 	) {
 		const tmp = document.createElement('div');
-		tmp.setHTML({
-			allowComments, allowAttributes, allowCustomElements, blockElements,
-			dropAttributes, dropElements, allowUnknownMarkup,
-		});
-		return each(what, el => el.append(...tmp.cloneNode(true).children), { base });
-	} else if (typeof sanitizer !== 'undefined' && Element.prototype.setHTML instanceof Function) {
-		const tmp = tmp.setHTML(text, { sanitizer });
+		tmp.setHTML({ sanitizer: { elements, attributes, comments }});
 		return each(what, el => el.append(...tmp.cloneNode(true).children), { base });
 	} else if (isHTML(text)) {
 		return each(what, el => el.innerHTML = text, { base });

@@ -1,5 +1,5 @@
 /**
- * @copyright 2021-2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2021-2024 Chris Zuber <admin@kernvalley.us>
  */
 import { parse } from './dom.js';
 import { signalAborted } from './abort.js';
@@ -229,15 +229,11 @@ export async function getHTML(url, {
 	keepalive = undefined,
 	signal = undefined,
 	timeout = null,
-	sanitizer = undefined,
-	allowElements,
-	allowComments,
-	allowAttributes,
-	allowCustomElements,
-	blockElements,
-	dropAttributes,
-	dropElements,
-	allowUnknownMarkup,
+	sanitizer: {
+		elements,
+		attributes,
+		comments,
+	} = {},
 	policy,
 	errorMessage,
 } = {}) {
@@ -251,10 +247,7 @@ export async function getHTML(url, {
 		return frag;
 	} else {
 		const frag = document.createDocumentFragment();
-		const doc = Document.parseHTML(html, {
-			sanitizer, allowElements, allowComments, allowAttributes, allowCustomElements,
-			blockElements, dropAttributes, dropElements, allowUnknownMarkup,
-		});
+		const doc = Document.parseHTML(html, { sanitizer: { elements, attributes, comments }});
 		frag.append(...doc.head.children, ...doc.body.children);
 		return frag;
 	}

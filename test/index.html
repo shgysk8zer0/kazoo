@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-trusted-policies="empty#html empty#script custom#html sanitizer-raw#html blob#script-url  youtube#script-url krv#embed">
+<html lang="en" dir="ltr">
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
@@ -22,7 +22,7 @@
 			connect-src 'self' https://unpkg.com/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json https://events.kernvalley.us/cal/krv-events.ics https://whiskeyflatdays.com/events.json https://whiskeyflatdays.com/mayors/events.json;
 			img-src * data: blob:;
 			require-trusted-types-for 'script';
-			trusted-types empty#html empty#script default sanitizer-raw#html trust-raw#html youtube#script-url github-user#html github-repo#html blob#script-url goog-cal#script-url goog-maps#script-url krv#embed;
+			trusted-types default aegis-sanitizer#html youtube#script-url github-user#html github-repo#html blob#script-url goog-cal#script-url goog-maps#script-url krv#embed;
 			upgrade-insecure-requests;"
 		/>
 		<title>Kazoo</title>
@@ -31,29 +31,48 @@
 			{
 				"imports": {
 					"@shgysk8zer0/kazoo/": "../",
-					"@shgysk8zer0/konami": "https://unpkg.com/@shgysk8zer0/konami@1.0.10/konami.js",
-					"@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.0/all.min.js",
-					"@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.0/",
+					"@shgysk8zer0/konami": "https://unpkg.com/@shgysk8zer0/konami@1.1.1/konami.js",
+					"@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.7/all.min.js",
+					"@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.7/",
+					"@shgysk8zer0/jswaggersheets": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.1.0/swagger.js",
+					"@shgysk8zer0/jswaggersheets/": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.1.0/",
+					"@shgysk8zer0/jss/": "https://unpkg.com/@shgysk8zer0/jss@1.0.1/",
 					"@shgysk8zer0/consts/": "https://unpkg.com/@shgysk8zer0/consts@1.0.8/",
-					"@shgysk8zer0/jswaggersheets": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.0.4/swagger.js",
-					"@shgysk8zer0/jswaggersheets/": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.0.4/",
-					"@shgysk8zer0/http-status": "https://unpkg.com/@shgysk8zer0/http-status@1.0.2/http-status.js",
-					"@shgysk8zer0/components/": "https://unpkg.com/@shgysk8zer0/components@0.0.12/",
-					"@kernvalley/components/": "https://unpkg.com/@kernvalley/components@1.1.2/",
+					"@shgysk8zer0/http/": "https://unpkg.com/@shgysk8zer0/http@1.0.5/",
+					"@shgysk8zer0/http-status": "https://unpkg.com/@shgysk8zer0/http-status@1.1.1/http-status.js",
+					"@aegisjsproject/trusted-types": "https://unpkg.com/@aegisjsproject/trusted-types@1.0.1/bundle.min.js",
+					"@aegisjsproject/trusted-types/": "https://unpkg.com/@aegisjsproject/trusted-types@1.0.1/",
+					"@aegisjsproject/parsers": "https://unpkg.com/@aegisjsproject/parsers@0.0.6/bundle.min.js",
+					"@aegisjsproject/parsers/": "https://unpkg.com/@aegisjsproject/parsers@0.0.6/",
+					"@aegisjsproject/sanitizer": "https://unpkg.com/@aegisjsproject/sanitizer@0.0.9/sanitizer.js",
+					"@aegisjsproject/sanitizer/": "https://unpkg.com/@aegisjsproject/sanitizer@0.0.9/",
+					"@aegisjsproject/core": "https://unpkg.com/@aegisjsproject/core@0.2.5/core.js",
+					"@aegisjsproject/core/": "https://unpkg.com/@aegisjsproject/core@0.2.5/",
+					"@aegisjsproject/styles": "https://unpkg.com/@aegisjsproject/styles@0.1.1/styles.js",
+					"@aegisjsproject/styles/": "https://unpkg.com/@aegisjsproject/styles@0.1.1/",
+					"@aegisjsproject/component": "https://unpkg.com/@aegisjsproject/component@0.1.2/component.js",
+					"@aegisjsproject/component/": "https://unpkg.com/@aegisjsproject/component@0.1.2/",
+					"@aegisjsproject/markdown": "https://unpkg.com/@aegisjsproject/markdown@0.1.2/markdown.js",
+					"@aegisjsproject/markdown/": "https://unpkg.com/@aegisjsproject/markdown@0.1.2/",
+					"@aegisjsproject/aegis-md": "https://unpkg.com/@aegisjsproject/aegis-md@0.0.2/aegis-md.js",
+					"@aegisjsproject/aegis-md/": "https://unpkg.com/@aegisjsproject/aegis-md@0.0.2/",
+					"@shgysk8zer0/components/": "https://unpkg.com/@shgysk8zer0/components@0.1.6/",
+					"@kernvalley/components/": "https://unpkg.com/@kernvalley/components@1.1.5/",
 					"@webcomponents/custom-elements": "https://unpkg.com/@webcomponents/custom-elements@1.6.0/custom-elements.min.js",
 					"leaflet": "https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js",
-					"firebase/": "https://www.gstatic.com/firebasejs/9.22.2/",
-					"urlpattern-polyfill": "https://unpkg.com/urlpattern-polyfill@9.0.0/index.js",
-					"highlight.js": "https://unpkg.com/@highlightjs/cdn-assets@11.8.0/es/highlight.min.js",
-					"highlight.js/": "https://unpkg.com/@highlightjs/cdn-assets@11.8.0/",
-					"marked": "https://unpkg.com/marked@5.1.0/src/marked.js",
-					"marked-highlight": "https://unpkg.com/marked-highlight@2.0.1/src/index.js"
-				},
-				"scope": {}
+					"urlpattern-polyfill": "https://unpkg.com/urlpattern-polyfill@10.0.0/index.js",
+					"highlight.js": "https://unpkg.com/@highlightjs/cdn-assets@11.9.0/es/core.min.js",
+					"highlight.js/": "https://unpkg.com/@highlightjs/cdn-assets@11.9.0/es/",
+					"@highlightjs/cdn-assets": "https://unpkg.com/@highlightjs/cdn-assets@11.9.0/es/core.min.js",
+					"@highlightjs/cdn-assets/": "https://unpkg.com/@highlightjs/cdn-assets@11.9.0/es/",
+					"marked": "https://unpkg.com/marked@12.0.1/lib/marked.esm.js",
+					"marked-highlight": "https://unpkg.com/marked-highlight@2.1.1/src/index.js",
+					"firebase/": "https://www.gstatic.com/firebasejs/9.23.0/"
+				}
 			}
 		</script>
-		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-h2kgNESJV1KN7BmHtXZv1j5WMcwFojESsbaNydwul3t6bqHOmzVMDaDXAEe6XLC+" src="https://unpkg.com/@shgysk8zer0/polyfills@0.3.0/all.min.js" fetchpriority="high"></script>
-		<script src="/harden.js" referrerpolicy="no-referrer" defer=""></script>
+		<script referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-kmIBBdQxerXwHwY0debVvlTDCJiBQBPsk5luyQ2y++Ly3aoL0ot4FGDpC+HLNYzp" src="https://unpkg.com/@shgysk8zer0/polyfills@0.3.8/all.min.js" fetchpriority="high" defer=""></script>
+		<script type="module" src="./js/policy.js" referrerpolicy="no-referrer"></script>
 		<script type="module" src="./js/index.js" referrerpolicy="no-referrer"></script>
 		<link rel="stylesheet" href="./css/index.css" referrerpolicy="no-referrer" media="all" />
 		<link rel="icon" type="image/svg+xml" sizes="any" href="./favicon.svg" />

@@ -40,15 +40,15 @@ use(markedHighlight({
 
 export async function parseMarkdown(str, {
 	base = document.baseURI,
-	allowElements = ALLOW_ELEMENTS,
-	allowAttributes = ALLOW_ATTRIBUTES,
+	elements = ALLOW_ELEMENTS,
+	attributes = ALLOW_ATTRIBUTES,
 } = {}) {
 	const { resolve, reject, promise } = Promise.withResolvers();
 
 	requestIdleCallback(() => {
 		try {
 			const parsed = parse(str);
-			const doc = Document.parseHTML(parsed, { allowElements, allowAttributes });
+			const doc = Document.parseHTML(parsed, { sanitizer: { elements, attributes }});
 			const frag = document.createDocumentFragment();
 
 			doc.querySelectorAll('img').forEach(img => {
@@ -74,8 +74,8 @@ export async function parseMarkdown(str, {
 
 export async function parseMarkdownFile(file, {
 	base = document.baseURI,
-	allowElements = ALLOW_ELEMENTS,
-	allowAttributes = ALLOW_ATTRIBUTES,
+	elements = ALLOW_ELEMENTS,
+	attributes = ALLOW_ATTRIBUTES,
 } = {}) {
 	if (! (file instanceof File)) {
 		throw new TypeError('Not a file.');
@@ -83,14 +83,14 @@ export async function parseMarkdownFile(file, {
 		throw new TypeError(`${file.name} is not a markdown file.`);
 	} else {
 		const text = await file.text();
-		return await parseMarkdown(text, { base, allowElements, allowAttributes });
+		return await parseMarkdown(text, { base, elements, attributes });
 	}
 }
 
 export async function fetchMarkdown(url, {
 	base = document.baseURI,
-	allowElements = ALLOW_ELEMENTS,
-	allowAttributes = ALLOW_ATTRIBUTES,
+	elements = ALLOW_ELEMENTS,
+	attributes = ALLOW_ATTRIBUTES,
 	headers = {},
 	mode = 'cors',
 	cache = 'default',
@@ -111,6 +111,6 @@ export async function fetchMarkdown(url, {
 		throw new TypeError(`Expected "Content-Type: ${MARKDOWN}" but got ${resp.headers.get('Content-Type')}.`);
 	} else {
 		const text = await resp.text();
-		return await parseMarkdown(text, { base, allowElements, allowAttributes });
+		return await parseMarkdown(text, { base, elements, attributes });
 	}
 }

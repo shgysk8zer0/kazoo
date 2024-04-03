@@ -2,8 +2,6 @@ import { createElement } from '../../elements.js';
 import { getJSON, getHTML } from '../../http.js';
 import { html, attr, each } from '../../dom.js';
 import { animate } from '../../animate.js';
-import { createPolicy } from '../../trust.js';
-import { isTrustedScriptOrigin } from '../../trust-policies.js';
 import { createYouTubeEmbed } from '../../youtube.js';
 import { createSVGFile } from '../../svg.js';
 import * as icons from '../../icons.js';
@@ -17,22 +15,6 @@ import { btnStyles } from './styles.js';
 import { addStyle } from '@shgysk8zer0/jswaggersheets';
 import '@shgysk8zer0/components/github/user.js';
 import '@shgysk8zer0/components/github/repo.js';
-
-const policy = createPolicy('default', {
-	createHTML: input => {
-		const el = document.createElement('div');
-		el.setHTML(input);
-		return el.innerHTML;
-	},
-	createScript: () => trustedTypes.emptyScript,
-	createScriptURL: input => {
-		if (isTrustedScriptOrigin(input)) {
-			return input;
-		} else {
-			throw new DOMException(`Untrusted Script URL: ${input}`);
-		}
-	}
-});
 
 addStyle(document, btnStyles);
 
@@ -56,7 +38,7 @@ document.getElementById('footer').append(
 );
 
 getJSON('./api/bacon.json').then(async lines => {
-	html('#bacon', policy.createHTML(lines.map(t => `<p onclick="alert(1)">${t}</p>`).join('')));
+	html('#bacon', trustedTypes.defaultPolicy.createHTML(lines.map(t => `<p onclick="alert(1)">${t}</p>`).join('')));
 
 	document.getElementById('header')
 		.append(...Object.entries(icons).map(([ariaLabel, func]) => func({ size: 64, ariaLabel })));

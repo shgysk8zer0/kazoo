@@ -1,5 +1,5 @@
 /**
- * @copyright 2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2023-2024 Chris Zuber <admin@kernvalley.us>
  */
 import { data, attr, css, getAttrs, aria as setAria } from './attrs.js';
 import { listen } from './events.js';
@@ -76,15 +76,11 @@ export function createElement(tag, {
 	text                      = undefined,
 	html                      = undefined,
 	policy                    = 'trustedTypes' in globalThis ? globalThis.trustedTypes.defaultPolicy : null,
-	sanitizer                 = undefined,
-	allowElements,
-	allowComments,
-	allowAttributes,
-	allowCustomElements,
-	blockElements,
-	dropAttributes,
-	dropElements,
-	allowUnknownMarkup,
+	sanitizer: {
+		elements,
+		comments,
+		attributes,
+	} = {},
 	aria                      = undefined,
 	events: { capture, passive, once, signal, ...events } = {},
 	animation: {
@@ -150,16 +146,9 @@ export function createElement(tag, {
 		} else if (typeof html === 'string' || isHTML(html)) {
 			if (
 				Element.prototype.setHTML instanceof Function
-				&& (
-					(typeof allowElements !== 'undefined' && typeof allowAttributes !== 'undefined')
-					|| ('Sanitizer' in globalThis && sanitizer instanceof globalThis.Sanitizer)
-				)
+				&& (typeof elements !== 'undefined' && typeof attributes !== 'undefined')
 			) {
-				el.setHTML(html, {
-					allowElements, allowComments, allowAttributes,
-					allowCustomElements, blockElements, dropAttributes, dropElements,
-					allowUnknownMarkup, sanitizer,
-				});
+				el.setHTML(html, { sanitizer: { elements, attributes, comments }});
 			} else {
 				setProp(el, 'innerHTML', html, { policy });
 			}
