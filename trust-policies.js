@@ -1,43 +1,10 @@
 /**
- * @copyright 2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2023-2024 Chris Zuber <admin@kernvalley.us>
  */
 import { createPolicy } from './trust.js';
 import { callOnce } from './utility.js';
-import { HTML } from '@shgysk8zer0/consts/mimes.js';
+import { attributes, elements, comments } from '@aegisjsproject/sanitizer/config/base.js';
 export { getYouTubePolicy } from'./google/policies.js';
-
-
-// @todo Remove use of `Sanitizer.getDefaultConfiguration()`
-const {
-	allowElements, allowAttributes, allowComments, blockElements, dropAttributes,
-	dropElements,
-} = Sanitizer.getDefaultConfiguration();
-
-const unsafeElements = [
-	'script', 'title', 'noscript', 'object', 'embed', 'style', 'param', 'iframe',
-	'base', 'frame', 'frameset',
-];
-
-const unsafeAttrs = [
-	'ping', 'action', 'formaction', 'http-equiv', 'background', 'style', 'bgcolor',
-	'fgcolor', 'linkcolor', 'lowsrc', ...Object.keys(
-		Object.getOwnPropertyDescriptors(HTMLElement.prototype)
-	).filter(desc => desc.startsWith('on')),
-];
-
-const urlAttrs = ['href', 'src', 'cite'];
-const allowedProtocols = location.protocol === 'http:' ? ['http:', 'https:'] : ['https:'];
-
-function isUnsafeURL(attr, node) {
-	const val = node.getAttribute(attr);
-	return (
-		typeof val === 'string'
-		&& val.length !== 0
-		&& urlAttrs.includes(attr)
-		&& URL.canParse(val, document.baseURI)
-		&& ! allowedProtocols.includes(new URL(val, document.baseURI).protocol)
-	);
-}
 
 /*
  * Do NOT export this! It is dangerous and MUST only be used internally.
@@ -93,23 +60,11 @@ export function stripHTML(input) {
 	return tmp.content.firstElementChild.textContent;
 }
 
-export function sanitizeHTML(input, {
-	allowElements, allowComments, allowAttributes, allowCustomElements,
-	blockElements, dropAttributes, dropElements, allowUnknownMarkup, sanitizer,
-} = {}) {
+export function sanitizeHTML(input, { elements, attributes, comments } = {}) {
 	if (Element.prototype.setHTML instanceof Function) {
 		const el = document.createElement('div');
-		el.setHTML(input, {
-			allowElements, allowComments, allowAttributes, allowCustomElements,
-			blockElements, dropAttributes, dropElements, allowUnknownMarkup, sanitizer,
-		});
+		el.setHTML(input, { sanitizer: { elements, attributes, comments }});
 		return el.innerHTML;
-	} else if (
-		'Sanitizer' in globalThis
-		&& Sanitizer.prototype.sanitizeFor instanceof Function
-		&& typeof sanitizer === 'object' && sanitizer instanceof Sanitizer
-	) {
-		return sanitizer.sanitizeFor('div', input).innerHTML;
 	} else {
 		console.warn('Sanitizer not supported. Returning escaped HTML');
 		return escapeHTML(input);
@@ -131,86 +86,60 @@ export const createEmptyScript = () => trustedTypes.emptyScript;
  * @TODO: Add support for SVG
  */
 export const sanitizerConfig = {
-	allowComments,
-	allowCustomElements: true,
-	allowElements: [
-		...allowElements, 'krv-ad', 'krv-events', 'leaflet-map', 'leaflet-marker',
+	comments,
+	elements: [
+		...elements, 'krv-ad', 'krv-events', 'leaflet-map', 'leaflet-marker',
 		'youtube-player', 'spotify-player', 'weather-current', 'weather-forecast',
 		'github-user', 'github-repo', 'github-gist', 'wfd-events', 'codepen-embed',
 		'bacon-ipsum', 'facebook-post',
 	],
-	allowAttributes: {
-		...allowAttributes,
-		'theme': [
-			'krv-ad', 'weather-current', 'weather-forecast', 'wfd-events',
-			'codepen-embed',
-		],
-		'loading': [
-			...allowAttributes.loading, 'krv-ad', 'weather-current',
-			'weather-forecast', 'youtube-player', 'spotify-player',
-			'github-user', 'github-repo', 'wfd-events', 'codepen-embed',
-		],
-		'crossorigin': [...allowAttributes.crossorigin, 'leaflet-map'],
-		'source': ['krv-ad', 'krv-events', 'wfd-events'],
-		'medium': ['krv-ad', 'krv-events', 'wfd-events'],
-		'content': ['krv-ad', 'krv-events', 'wfd-events'],
-		'campaign': ['krv-ad', 'krv-events', 'wfd-events'],
-		'term': ['krv-ad', 'krv-events', 'wfd-events'],
-		'count': ['krv-events'],
-		'layout': ['krv-ad'],
-		'center': ['leaflet-map'],
-		'zoom': ['leaflet-map'],
-		'tilesrc': ['leflet-map'],
-		'allowlocate': ['leaflet-map'],
-		'allowfullscreen': ['leaflet-map'],
-		'zoomcontrol': ['leaflet-map'],
-		'minzoom': ['leaflet-map', 'leaflet-marker'],
-		'maxzoom': ['leaflet-map', 'leaflet-marker'],
-		'longitude': ['leaflet-marker'],
-		'latitude': ['leaflet-marker'],
-		'open': [...allowAttributes.open, 'krv-ad'],
-		'appid': ['weather-current', 'weather-forecast'],
-		'postalcode': ['weather-current', 'weather-forecast'],
-		'height': [
-			...allowAttributes.height, 'youtube-player', 'github-gist',
-			'codepen-embed', 'facebook-post',
-		],
-		'width': [
-			...allowAttributes.width, 'youtube-player', 'github-gist',
-			'codepen-embed', 'facebook-post',
-		],
-		'large': ['spotify-player'],
-		'uri': ['spotify-player'],
-		'user': [
-			'github-repo', 'github-user', 'github-gist', 'codepen-embed',
-			'facebook-post',
-		],
-		'bio': ['github-user'],
-		'gist': ['github-gist'],
-		'file': ['github-gist'],
-		'repo': ['github-repo'],
-		'pen': ['codepen-embed'],
-		'tab': ['codepen-embed'],
-		'editable': ['codepen-embed'],
-		'clicktoload': ['codepen-embed'],
-		'lines': ['bacon-ipsum'],
-		'paras': ['bacon-ipsum'],
-		'start-with-lorem': ['bacon-ipsum'],
-		'filler': ['bacon-ipsum'],
-		'post': ['facebook-post'],
-		'showtext': ['facebook-post'],
-	},
-	dropAttributes,
-	blockElements,
-	dropElements,
+	attributes: [
+		...attributes,
+		'theme',
+		'loading',
+		'source',
+		'medium',
+		'content',
+		'campaign',
+		'term',
+		'count',
+		'layout',
+		'center',
+		'zoom',
+		'tilesrc',
+		'allowlocate',
+		'allowfullscreen',
+		'zoomcontrol',
+		'minzoom',
+		'maxzoom',
+		'longitude',
+		'latitude',
+		'open',
+		'appid',
+		'postalcode',
+		'large',
+		'uri',
+		'user',
+		'bio',
+		'gist',
+		'file',
+		'repo',
+		'pen',
+		'tab',
+		'editable',
+		'clicktoload',
+		'lines',
+		'paras',
+		'start-with-lorem',
+		'filler',
+		'post',
+		'showtext',
+	],
 };
 
 export const getDefaultPolicy = callOnce(() => {
 	return createPolicy('default', {
-		createHTML: input => sanitizeHTML(input, {
-			allowElements, allowAttributes, allowComments, blockElements,
-			dropAttributes, dropElements,
-		}),
+		createHTML: input => sanitizeHTML(input,{ elements, attributes, comments }),
 		createScript: createEmptyScript,
 		createScriptURL: input => {
 			if (isTrustedScriptOrigin(input)) {
@@ -263,10 +192,7 @@ export const getDataScriptURLPolicy = callOnce(() => createPolicy('data#script-u
 // Disqus embeds are created via their script & must use default policy :(
 export const getDefaultPolicyWithDisqus = callOnce(() => {
 	return createPolicy('default', {
-		createHTML: input => sanitizeHTML(input, {
-			allowElements, allowAttributes, allowComments, blockElements, dropAttributes,
-			dropElements,
-		}),
+		createHTML: input => sanitizeHTML(input, { elements, attributes,  comments }),
 		createScript: createEmptyScript,
 		createScriptURL: input => {
 			if (isTrustedScriptOrigin(input) || isDisqusEmbed(input)) {
@@ -280,10 +206,7 @@ export const getDefaultPolicyWithDisqus = callOnce(() => {
 
 export const getKRVPolicy = callOnce(() => {
 	return createPolicy('krv', {
-		createHTML: input => sanitizeHTML(input, {
-			allowElements, allowAttributes, allowComments, blockElements, dropAttributes,
-			dropElements,
-		}),
+		createHTML: input => sanitizeHTML(input, { elements, attributes, comments }),
 		createScript: createEmptyScript,
 		createScriptURL: input => {
 			if (isTrustedScriptOrigin(input)) {
@@ -316,45 +239,5 @@ export const getDisqusPolicy = callOnce(() => createPolicy('disqus#script-url', 
 		}
 	}
 }));
-
-export function isSafeHTML(content) {
-	try {
-		const policy = getRawHTMLPolicy();
-		const parsed = content instanceof Node
-			? content
-			: new DOMParser().parseFromString(policy.createHTML(content), HTML);
-
-		const iter = document.createNodeIterator(parsed, NodeFilter.SHOW_ELEMENT);
-
-		let safe = true;
-		let node = iter.nextNode();
-
-		while (node instanceof Node) {
-			if (node.nodeType === Node.ELEMENT_NODE) {
-				if (unsafeElements.includes(node.localName.toLowerCase())) {
-					safe = false;
-					break;
-				} else if (node.getAttributeNames().some(attr => {
-					return unsafeAttrs.includes(attr.toLowerCase()) || isUnsafeURL(attr, node);
-				})) {
-					safe = false;
-					break;
-				} else if (node.tagName === 'TEMPLATE' && ! isSafeHTML(node.content)) {
-					safe = false;
-					break;
-				} else {
-					node = iter.nextNode();
-				}
-			} else {
-				safe = false;
-				break;
-			}
-		}
-
-		return safe;
-	} catch {
-		return false;
-	}
-}
 
 export const getDefaultNoOpPolicy = callOnce(() => createPolicy('default', {}));

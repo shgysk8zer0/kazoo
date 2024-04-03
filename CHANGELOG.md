@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.0] - 2024-04-02
+
+### Changed
+- Updated to more recent polyfills for Sanitizer API & Trusted Types API
+- Massive breaking changes in multiple places
+
 ## [v0.3.4] - 2024-03-15
 
 ### Added
@@ -149,7 +155,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add `markdown` module
-- Add `isSafeHTML()` to `trust-policies` module (checks for unsafe elements & attributes)
+- Add `()` to `trust-policies` module (checks for unsafe elements & attributes)
 - Add `getCSSStyleSheet()` to `http` module
 - Add Markdown to `types` module
 - Add `gravatar` module
