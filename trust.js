@@ -1,5 +1,5 @@
 /**
- * @copyright 2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2023-2024 Chris Zuber <admin@kernvalley.us>
  */
 import { callOnce } from './utility.js';
 
@@ -63,16 +63,16 @@ export function setAttr(el, attr, val, {
 }
 
 export function supported() {
-	return 'trustedTypes' in globalThis
-		&& trustedTypes instanceof EventTarget
-		&& trustedTypes.createPolicy instanceof Function;
+	return 'trustedTypes' in globalThis && trustedTypes.createPolicy instanceof Function;
 }
 
 export function isTrustPolicy(policy) {
 	if ('TrustedTypePolicy' in globalThis && policy instanceof TrustedTypePolicy) {
 		return true;
-	} else {
+	} else if (typeof policy === 'object') {
 		return policy != null && policy.createHTML instanceof Function;
+	} else {
+		return false;
 	}
 }
 
