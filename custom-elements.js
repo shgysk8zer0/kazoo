@@ -1,7 +1,8 @@
 /**
- * @copyright 2023 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2023-2024 Chris Zuber <admin@kernvalley.us>
  */
 import { HTML } from '@shgysk8zer0/consts/mimes.js';
+import { registerComponent as reg } from '@aegisjsproject/core/componentRegistry.js';
 
 export const supported = globalThis.customElements instanceof Object;
 
@@ -9,17 +10,27 @@ export function isDefined(...tags) {
 	return supported && tags.every(tag => typeof customElements.get(tag) !== 'undefined');
 }
 
-export function registerCustomElement(tag, cls, ...rest) {
-	if (! supported) {
-		console.error(new Error('`customElements` not supported'));
+export function defineComponent(tag, cls, allow = false) {
+	return allow ? registerAllowedCustomElement(tag, cls) : registerCustomElement(tag, cls);
+}
+
+export function registerAllowedCustomElement(tag, cls, ...rest) {
+	try {
+		reg(tag, cls, ...rest);
+		return true;
+	} catch(err) {
+		console.error(err);
 		return false;
-	} else if (isDefined(tag)) {
-		console.warn(new Error(`<${tag}> is already defined`));
-		// Returns true/false if element being registered matches given class
-		return customElements.get(tag) === cls;
-	} else {
+	}
+}
+
+export function registerCustomElement(tag, cls, ...rest) {
+	try {
 		customElements.define(tag, cls, ...rest);
 		return true;
+	} catch(err) {
+		console.error(err);
+		return false;
 	}
 }
 
