@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.2] - 2024-04-05
+
+### Added
+- Add `defineComponent` & `registerAllowedCustomElement` to allow tags in Aegis Sanitizer Config
+
 ## [v1.0.1] - 2024-04-03
 
 ### Fixed
