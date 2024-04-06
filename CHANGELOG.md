@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.3] - 2024-04-05
+
+### Added
+- Add functions to list & add languages for syntax highlighting in markdown
+
+### Fixed
+- Fix no default (`'plaintext'`) language for syntax highlighting in markdown
+
 ## [v1.0.2] - 2024-04-05
 
 ### Added

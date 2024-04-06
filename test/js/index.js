@@ -13,8 +13,25 @@ import { fileToImage } from '../../img-utils.js';
 import { btnStyles } from './styles.js';
 // import { fillShareTarget } from '../../share-target.js';
 import { addStyle } from '@shgysk8zer0/jswaggersheets';
+import { fetchMarkdown, registerLanguage } from '../../markdown.js';
+import javascript from 'highlight.js/languages/javascript.min.js';
+import bash from 'highlight.js/languages/bash.min.js';
+import xml from 'highlight.js/languages/bash.min.js';
 import '@shgysk8zer0/components/github/user.js';
 import '@shgysk8zer0/components/github/repo.js';
+
+registerLanguage('javascript', javascript);
+registerLanguage('bash', bash);
+registerLanguage('xml', xml);
+registerLanguage('html', xml);
+
+fetchMarkdown('../../README.md').then(frag => {
+	const readme = document.createElement('div');
+	readme.id = 'readme-popover';
+	readme.popover = 'auto';
+	readme.append(frag);
+	document.body.append(readme);
+});
 
 addStyle(document, btnStyles);
 
@@ -52,6 +69,13 @@ getJSON('./api/bacon.json').then(async lines => {
 
 	document.getElementById('main').append(createElement('h3', { text: 'Primes' }), list);
 	document.getElementById('nav').append(
+		createElement('button', {
+			type: 'button',
+			classList: ['btn', 'btn-primary'],
+			text: 'Show README',
+			popovertarget: 'readme-popover',
+			popovertargetaction: 'show',
+		}),
 		createElement('button', {
 			type: 'button',
 			text: 'YouTube',
