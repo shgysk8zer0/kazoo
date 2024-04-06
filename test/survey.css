@@ -1,0 +1,57 @@
+:root {
+	line-height: 1.1;
+	font-family: system-ui;
+	font-size: 16px;
+}
+
+body {
+	width: 850px;
+	margin: 25px;
+}
+
+.no-border {
+	border: none;
+}
+
+.form-group {
+	margin-top: 0.6em;
+}
+
+.block {
+	display: block;
+}
+
+.input-label {
+	display: block;
+}
+
+legend {
+	font-weight: 600;
+}
+
+label {
+	vertical-align: bottom;
+}
+
+input[type="text"], input[type="number"],  input[type="email"] {
+	display: block;
+	width: 70%;
+	padding: 0.2em 0.7em;
+	border-width: 0 0 2px 0;
+	margin-top: 1.1em;
+	border-color: #000;
+}
+
+input[type="checkbox"] {
+	display: inline-block;
+	height: 1.5em;
+	width: 1.5em;
+	margin-left: 1.5em;
+	vertical-align: bottom;
+}
+
+.flex {
+	display: flex;
+	flex-direction: row;
+	gap: 0.8em;
+}

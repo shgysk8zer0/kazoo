@@ -143,4 +143,11 @@ export const btnStyles = {
 	'.btn.btn-outline.reject': {
 		color: 'var(--button-reject-background)',
 	},
+	':popover-open': {
+		overflow: 'auto',
+		'max-height': '95dvh',
+		'max-width': '95%',
+		padding: '1.3rem',
+		'border-radius': '6px',
+	},
 };
