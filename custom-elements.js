@@ -3,6 +3,10 @@
  */
 import { HTML } from '@shgysk8zer0/consts/mimes.js';
 import { registerComponent as reg } from '@aegisjsproject/core/componentRegistry.js';
+import { whenIntersecting } from './intersect.js';
+import { Cache } from './Cache.js';
+
+const componentCache = new Cache();
 
 export const supported = globalThis.customElements instanceof Object;
 
@@ -86,5 +90,85 @@ export async function getTemplate(src, opts, {
 		return frag;
 	} else {
 		throw new Error(`${resp.url} [${resp.status} ${resp.statusText}]`);
+	}
+}
+
+export async function renderComponentShadow(shadow, {
+	template,
+	styles,
+	content,
+	loading = 'eager',
+	cache = componentCache,
+	key,
+	expires,
+	sanitizer: {
+		elements,
+		attributes,
+		comments = false,
+		dataAttributes = true,
+		...sanitizer
+	}
+}) {
+	if (! (shadow instanceof ShadowRoot)) {
+		throw new TypeError('Shadow expected to be a `ShadowRoot`.');
+	}
+
+	if (typeof content === 'string') {
+		shadow.host.setHTML(content, { elements, attributes, comments, dataAttributes, ...sanitizer });
+	} else if (content instanceof HTMLTemplateElement) {
+		shadow.host.append(content.content.cloneNode(true));
+	} else if (content instanceof Node) {
+		shadow.host.append(content);
+	} else if (Array.isArray(content)) {
+		shadow.host.append(...content);
+	}
+
+	const cacheKey = typeof key === 'undefined' ? shadow.host.constructor : key;
+
+	if (loading === 'lazy') {
+		await whenIntersecting(shadow.host);
+	}
+
+	if (cache.has(cacheKey, expires !== undefined)) {
+		const { frag, sheets } = await cache.get(cacheKey);
+		shadow.adoptedStyleSheets = sheets;
+		shadow.append(frag.cloneNode(true));
+	} else {
+		cache.set(key, new Promise(async (resolve, reject) => {
+			const frag = document.createDocumentFragment();
+
+			if (typeof template === 'string') {
+				frag.setHTML(template, { elements, attributes, comments, dataAttributes, ...sanitizer });
+			} else if (template instanceof HTMLTemplateElement) {
+				frag.append(template.content.cloneNode(true));
+			} else if (template instanceof Node) {
+				frag.append(template.cloneNode(true));
+			} else {
+				reject(new TypeError('Template must be a string or a Node.'));
+			}
+
+			if (Array.isArray(styles)) {
+				const sheets = await Array.fromAsync(
+					styles,
+					async sheet => sheet instanceof CSSStyleSheet ? sheet : new CSSStyleSheet().replace(sheet)
+				);
+
+				resolve({ frag, sheets });
+				shadow.adoptedStyleSheets = sheets;
+				shadow.append(frag.cloneNode(true));
+			} else if (styles instanceof CSSStyleSheet) {
+				resolve({ frag, sheets: [styles] });
+				shadow.adoptedStyleSheets = [styles];
+				shadow.append(frag.cloneNode(true));
+			} else if (typeof styles === 'string') {
+				const sheet = await new CSSStyleSheet().replace(styles);
+				resolve({ frag, sheets: [sheet] });
+				shadow.adoptedStyleSheets = [sheet];
+				shadow.append(frag.cloneNode(true));
+			}
+		}).catch(err => {
+			console.error(err);
+			cache.delete(cacheKey);
+		}), expires);
 	}
 }

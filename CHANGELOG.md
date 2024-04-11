@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.4] - 2024-04-11
+
+### Added
+- Add basic key/value cache
+- Add `renderComponentShadow` function to `custom-elements.js` module
+
 ## [v1.0.3] - 2024-04-05
 
 ### Added
