@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.5] - 2024-04-25
+
+### Added
+- Add support for `tags` in `createKRVEvents()`
+
+### Changed
+- Update params set by `createKRVEvents()` to be full names
+
 ## [v1.0.4] - 2024-04-11
 
 ### Added
