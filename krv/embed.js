@@ -77,16 +77,30 @@ export function createKRVMaps({
 export function createKRVEvents({
 	theme, source, width, height, loading = 'lazy',
 	fetchPriority = 'auto', title, id, classList, referrerPolicy = 'no-referrer',
-	credentialless = true, styles, dataset, slot, part,
+	credentialless = true, styles, dataset, slot, part, tags, target, count,
 } = {}) {
 	const src = new URL(trustedURLs.events);
 
 	if (typeof theme === 'string') {
-		src.searchParams.set('t', theme);
+		src.searchParams.set('theme', theme);
 	}
 
 	if (typeof source === 'string') {
-		src.searchParams.set('s', source);
+		src.searchParams.set('source', source);
+	}
+
+	if (typeof target === 'string') {
+		src.searchParams.set('target', target);
+	}
+
+	if (typeof tags === 'string') {
+		src.searchParams.set('tags', tags);
+	} else if (Array.isArray(tags)) {
+		tags.forEach(tag => src.searchParams.append('tags', tag));
+	}
+
+	if (Number.isSafeInteger(count) && count > 0) {
+		src.searchParams.set('count', count);
 	}
 
 	return createIframe(src.href, {
