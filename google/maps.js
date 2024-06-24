@@ -22,6 +22,28 @@ export const getPolicy = callOnce(() => createPolicy(policyName, {
 	}
 }));
 
+export function getGoogleMapsAddressURL({
+	name,
+	streetAddress,
+	addressLocality,
+	addressRegion,
+	postalCode,
+	addressCounty,
+}) {
+	return getGoogleMapsURL(
+		[name, streetAddress, addressLocality, addressRegion, postalCode, addressCounty]
+			.filter(part => typeof part === 'string')
+			.join(' ')
+	);
+}
+
+export function getGoogleMapsURL(addressQuery) {
+	const url = new URL('https://www.google.com/maps/search/?api=1');
+	url.searchParams.set('query', addressQuery);
+
+	return url;
+}
+
 export function createGoogleMapsURL(id, { policy } = {}) {
 	const url = new URL(GMAPS_EMBED);
 	url.searchParams.set('pb', id);
