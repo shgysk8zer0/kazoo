@@ -413,10 +413,7 @@ export function createLink(href = null, {
 	sizes = [],
 	events: { capture, passive, once, signal, ...events } = {},
 	...rest
-}) {
-	if (isBare(href)) {
-		href = resolveModule(href);
-	}
+} = {}) {
 	const link = createElement('link', {
 		dataset, ...rest,
 		events: { capture, passive, once, signal, ...events },
@@ -467,7 +464,7 @@ export function createLink(href = null, {
 	}
 
 	if (typeof href === 'string') {
-		link.href = href;
+		link.href = isBare(href) ? resolveModule(href) : href;
 	}
 
 	if (disabled) {
@@ -485,6 +482,28 @@ export function createLink(href = null, {
 	}
 
 	return link;
+}
+
+export function createStyleSheet(href = null, {
+	blocking = null,
+	crossOrigin = 'anonymous',
+	referrerPolicy = 'no-referrer',
+	fetchPriority = 'auto',
+	integrity = null,
+	nonce = null,
+	media = 'all',
+	disabled = false,
+	dataset = null,
+	title = null,
+	events: { capture, passive, once, signal, ...events } = {},
+	...rest
+} = {}) {
+	return createLink(href, {
+		rel: ['stylesheet'],
+		blocking, crossOrigin, referrerPolicy, fetchPriority, integrity, nonce, media, disabled, dataset, title,
+		events: { capture, passive, once, signal, ...events },
+		...rest
+	});
 }
 
 export function createIframe(src, {

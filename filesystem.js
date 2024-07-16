@@ -4,24 +4,24 @@
 import { getDeferred, lock } from './promises.js';
 import { createElement, createInput } from './elements.js';
 
-export async function getDataURI(file, { base64 = true } = {})  {
+export async function getDataURI(blob, { base64 = true } = {})  {
 	return base64
-		? `data:${file.type};base64,${btoa(await file.text())}`
-		: `data:${file.type},${encodeURIComponent(await file.text())}`;
+		? `data:${blob.type};base64,${await blob.bytes().then(bits => bits.toBase64())}`
+		: `data:${blob.type},${encodeURIComponent(await blob.text())}`;
 }
 
-export async function saveFile(file, { signal, type = 'blob', base64 = true } = {}) {
+export async function saveBlob(blob, filename, { signal, type = 'blob', base64 = true } = {}) {
 	if (signal instanceof EventTarget && signal.aborted) {
 		throw signal.reason;
-	} else if (file instanceof File) {
-		const link = document.createElement('a');
+	} else if (blob instanceof Blob) {
 		const { resolve, promise } = Promise.withResolvers();
-		const url =  type ===  'blob'
-			? URL.createObjectURL(file)
-			: await getDataURI(file, { base64 });
+		const link = document.createElement('a');
+		const url = type === 'blob'
+			? URL.createObjectURL(blob)
+			: await getDataURI(blob, { base64 });
 
 		link.href = url;
-		link.download = file.name;
+		link.download = filename;
 		link.hidden = true;
 
 		link.addEventListener('click', ({ target }) => {
@@ -39,8 +39,12 @@ export async function saveFile(file, { signal, type = 'blob', base64 = true } = 
 
 		await promise;
 	} else {
-		throw new TypeError('Not a file');
+		throw new TypeError('Not a file or blob.');
 	}
+}
+
+export async function saveFile(file, { signal, type = 'blob', base64 = true } = {}) {
+	await saveBlob(file, file.name, { signal, type, base64 });
 }
 
 export async function openFile({

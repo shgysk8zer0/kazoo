@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="color-scheme" content="light dark" />
-		<meta http-equiv="Content-Security-Policy" content="
+		<meta http-equiv="Content-Security-Policy-Resport-Only" content="
 			default-src 'self';
 			base-uri 'self';
 			manifest-src 'self';
@@ -13,7 +13,7 @@
 			style-src 'self' https://unpkg.com/ blob:;
 			font-src cdn.kernvalley.us;
 			form-action 'none';
-			frame-src https://www.youtube-nocookie.com/embed/ https://calendar.google.com/calendar/embed https://www.google.com/maps/embed https://whiskeyflatdays.com/embed/ https://events.kernvalley.us/embed/ https://whiskeyflatdays.com/mayors/embed/;
+			frame-src data: https://www.youtube-nocookie.com/embed/ https://calendar.google.com/calendar/embed https://www.google.com/maps/embed https://whiskeyflatdays.com/embed/ https://events.kernvalley.us/embed/ https://whiskeyflatdays.com/mayors/embed/;
 			object-src 'none';
 			media-src 'none';
 			child-src 'self';
@@ -32,8 +32,8 @@
 				"imports": {
 					"@shgysk8zer0/kazoo/": "../",
 					"@shgysk8zer0/konami": "https://unpkg.com/@shgysk8zer0/konami@1.1.1/konami.js",
-					"@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.7/all.min.js",
-					"@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.7/",
+					"@shgysk8zer0/polyfills": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.14/all.min.js",
+					"@shgysk8zer0/polyfills/": "https://unpkg.com/@shgysk8zer0/polyfills@0.3.14/",
 					"@shgysk8zer0/jswaggersheets": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.1.0/swagger.js",
 					"@shgysk8zer0/jswaggersheets/": "https://unpkg.com/@shgysk8zer0/jswaggersheets@1.1.0/",
 					"@shgysk8zer0/jss/": "https://unpkg.com/@shgysk8zer0/jss@1.0.1/",
@@ -71,7 +71,9 @@
 				}
 			}
 		</script>
-		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-cDZDMlFHMB71kkyJ24QLYvj1kTEbLJmmQevX8HSVwFM+d5oXdAudsvLoec99AUiW" src="https://unpkg.com/@shgysk8zer0/polyfills@0.3.10/all.min.js" fetchpriority="high"></script>
+		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous"
+			integrity="sha384-0X3EulTx7zYopgU2uL88m4IYnCOsYnnI9eVE9Oigv4FF9Dnmdfxt62+fU0y6D1M3"
+			src="https://unpkg.com/@shgysk8zer0/polyfills@0.3.14/all.min.js" fetchpriority="high"></script>
 		<script type="module" src="./js/policy.js" referrerpolicy="no-referrer"></script>
 		<script type="module" src="./js/index.js" referrerpolicy="no-referrer"></script>
 		<link rel="stylesheet" href="./css/index.css" referrerpolicy="no-referrer" media="all" />
