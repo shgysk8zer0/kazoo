@@ -1,7 +1,7 @@
 const maps = new Map();
 const cache = new Map();
 
-export const URL_PREFIXES = ['http:', 'https:'];
+export const URL_PREFIXES = ['http:', 'https:', 'blob:', 'data:', 'file:'];
 export const PATH_PREFIXES = ['/', './', '../'];
 export const isString = str => typeof str === 'string';
 export const isURL = str => isString(str) && URL_PREFIXES.some(pre => str.startsWith(pre));
@@ -25,10 +25,16 @@ export function getImportmap() {
 }
 
 export function resolveModule(specifier, { imports } = getImportmap()) {
-	if (cache.has(specifier)) {
+	if (specifier instanceof URL) {
+		return specifier.href;
+	} else if (typeof specifier !== 'string') {
+		throw new TypeError('Module specifier must be a string or URL.');
+	} else if (cache.has(specifier)) {
 		return cache.get(specifier);
 	} else if (imports.hasOwnProperty(specifier)) {
 		return imports[specifier];
+	} else if (URL.canParse(specifier) || isURL(specifier)) {
+		return specifier;
 	} else if (specifier.includes('/')) {
 		let found = false;
 
@@ -51,5 +57,7 @@ export function resolveModule(specifier, { imports } = getImportmap()) {
 			cache.set(specifier, resolved);
 			return resolved;
 		}
+	} else {
+		throw new TypeError(`Resolution of specifier “${specifier}” was blocked by a null entry.`);
 	}
 }

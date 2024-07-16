@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.7] - 2024-07-16
+
+### Added
+- Base64 module for eg retrieving a `Blob` from a base64 encoded data URI
+- Add support for saving files from `Blob` objects in `filesystem.js`
+
+### Fixed
+- Fix treating `blob:` & `data:` and `file:` URLs as "bare specifiers"
+
+### Changed
+- Update `@shgysk8zer0/polyfills`
+- Update handling of creating data URIs in `filesystem.js`
+
 ## [v1.0.6]  - 2024-06-23
 
 ### Added

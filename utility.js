@@ -354,7 +354,7 @@ export function setUTMParams(url, {
 	if (isNullish(url)) {
 		return null;
 	} else if (! (url instanceof URL)) {
-		return setUTMParams(new URL(url, document.baseURI), {
+		return setUTMParams(URL.parse(url, document.baseURI), {
 			source: utm_source,
 			medium: utm_medium,
 			content: utm_content,
@@ -364,7 +364,13 @@ export function setUTMParams(url, {
 	} else if (typeof utm_source !== 'string') {
 		return url;
 	} else {
-		return setURLParams(url, { utm_source, utm_medium, utm_content, utm_campaign, utm_term });
+		url.search = new URLSearchParams([
+			...url.searchParams.entries(),
+			...Object.entries({ utm_source, utm_medium, utm_content, utm_campaign, utm_term })
+				.filter(([, v]) => typeof v === 'string'),
+		]);
+
+		return url;
 	}
 }
 
