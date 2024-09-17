@@ -12,11 +12,11 @@ export async function base64Encode(thing) {
 			} else if (thing instanceof Blob || thing instanceof Request || thing instanceof Response) {
 				return await thing.bytes().then(bytes => bytes.toBase64());
 			} else if (thing instanceof URL) {
-				return await btoa(thing.href);
+				return btoa(thing.href);
 			} else if (thing instanceof Uint8Array) {
 				return thing.toBase64();
 			} else {
-				return await btoa(thing.toString());
+				return btoa(thing.toString());
 			}
 
 		case 'undefined':

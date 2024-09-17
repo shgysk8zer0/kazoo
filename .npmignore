@@ -10,3 +10,4 @@ test/
 .nvmrc
 *.tgz
 *.log
+*.test.js

@@ -1,3 +1,4 @@
+/* global Record Tuple */
 export function deepFreeze(thing) {
 	switch(typeof thing) {
 		case 'function':
@@ -35,6 +36,7 @@ export function getImmutable(thing) {
 			} else if (Array.isArray(thing)) {
 				return Tuple.from(thing.map(getImmutable));
 			} else {
+
 				return Record.fromEntries(
 					Object.entries(thing)
 						.map(([key, val]) => [key, getImmutable(val)])
