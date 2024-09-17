@@ -1,9 +1,27 @@
 {
   "name": "@shgysk8zer0/kazoo",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": false,
   "type": "module",
   "description": "A JavaScript monorepo for all the things!",
+  "exports": {
+    "./*.js": {
+      "import": "./*.js",
+      "require": "./*.cjs"
+    },
+    "./*.mjs": {
+      "import": "./*.js",
+      "require": "./*.cjs"
+    },
+    "./*.cjs": {
+      "import": "./*.js",
+      "require": "./*.cjs"
+    },
+    "./*": {
+      "import": "./*.js",
+      "require": "./*.cjs"
+    }
+  },
   "config": {
     "serve": {
       "domain": "localhost",
@@ -18,13 +36,15 @@
     }
   },
   "scripts": {
-    "test": "npm run lint:js && npm run lint:html",
+    "test": "npm run lint:js && npm run lint:html && npm run run:tests",
     "preversion": "npm test",
+    "prepare": "npm test",
     "start": "http-server ${npm_package_config_serve_path} -c-1 --port ${npm_package_config_serve_port} --gzip true --brotli true -a ${npm_package_config_serve_domain} -o /test/",
     "fix": "npm run fix:js",
     "fix:js": "eslint . --fix",
     "lint:js": "eslint .",
     "lint:html": "htmlhint \"**/*.html\"",
+    "run:tests": "node --test *.test.js",
     "create:lock": "npm i --package-lock-only --ignore-scripts",
     "version:bump": "npm run version:bump:patch",
     "version:bump:patch": "npm version --no-git-tag-version patch && npm run create:lock",
@@ -58,8 +78,10 @@
   },
   "homepage": "https://github.com/shgysk8zer0/kazoo#readme",
   "devDependencies": {
+    "@shgysk8zer0/eslint-config": "^1.0.1",
+    "@shgysk8zer0/js-utils": "^1.0.0",
+    "@shgysk8zer0/polyfills": "^0.4.2",
     "htmlhint": "^1.1.4",
-    "http-server": "^14.1.1",
-    "@shgysk8zer0/js-utils": "^1.0.0"
+    "http-server": "^14.1.1"
   }
 }

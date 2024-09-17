@@ -1,3 +1,4 @@
+<!-- markdownlint-disable -->
 # Changelog
 All notable changes to this project will be documented in this file.
 
@@ -5,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [v1.0.8] - 2024-09-17
+
+### Added
+- Add `exports` to package
+- Add `.test.js` / `node --test` testing
+
+### Changed
+- Update hashing output to use `Uint8Array.prototype.(toHex|toBase64)`
+- Update `md5()` to use `ArrayBuffer`-based techniquess and be consistent with `crypto.subtle.digest`
+- The `hash()` function now supports a wider variety if inputs/data
 
 ## [v1.0.7] - 2024-07-16
 
