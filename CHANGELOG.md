@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.9] - 2024-09-19
+
+### Added
+- Add `safeExecute` function in `utility.js`
+
+### Fixed
+- Do not import polyfills in `md5.js` (duplicate policy conflicts)
+
 ## [v1.0.8] - 2024-09-17
 
 ### Added
