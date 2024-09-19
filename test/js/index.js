@@ -1,9 +1,10 @@
 import { createElement } from '../../elements.js';
 import { getJSON, getHTML } from '../../http.js';
-import { html, attr, each } from '../../dom.js';
+import { html, attr, each, on } from '../../dom.js';
 import { animate } from '../../animate.js';
 import { createYouTubeEmbed } from '../../youtube.js';
 import { createSVGFile } from '../../svg.js';
+import { createGravatar } from '../../gravatar.js';
 import * as icons from '../../icons.js';
 import { whenIntersecting } from '../../intersect.js';
 import { isPrime } from '../../math.js';
@@ -24,6 +25,33 @@ registerLanguage('javascript', javascript);
 registerLanguage('bash', bash);
 registerLanguage('xml', xml);
 registerLanguage('html', xml);
+
+on('#grav', 'submit', async event => {
+	event.preventDefault();
+	const data = new FormData(event.target);
+	const img = await createGravatar(data.get('email'), {
+		size: 512,
+		animation: {
+			keyframes: [
+				{ opacity: 0, transform: 'scale(0)' },
+				{ opacity: 1, transform: 'none' },
+			],
+			duration: 300,
+			easing: 'ease-in-out',
+		},
+		events:{
+			toggle(event) {
+				if (event.newState === 'closed') {
+					event.target.remove();
+				}
+			}
+		}
+	});
+
+	img.popover = 'auto';
+	document.body.append(img);
+	img.showPopover();
+});
 
 fetchMarkdown('../../README.md').then(frag => {
 	const readme = document.createElement('div');

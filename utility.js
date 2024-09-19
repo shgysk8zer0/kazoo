@@ -458,3 +458,20 @@ export const ucFirst = str => str.toString().substring(0, 1).toUpperCase() + str
 export async function filterKeys(obj, keys) {
 	return Object.fromEntries(Object.entries(obj).filter(([key]) => keys.includes(key)));
 }
+
+/**
+ * Safely executes a callback function and returns a tuple of [result, error].
+ *
+ * @param {Function} cb - The callback function to execute.
+ * @returns {Promise<[any, Error|null]>} A promise that resolves with a tuple `[result|null, Error|null]`.
+ *          The tuple is frozen to ensure immutability.
+ */
+export async function safeExecute(cb) {
+	if (! (cb instanceof Function)) {
+		return Object.freeze(null, new TypeError('Callback is not a function.'));
+	} else {
+		return Promise.try(cb)
+			.then(result => Object.freeze([result, null]))
+			.catch(err => Object.freeze([null, err]));
+	}
+}

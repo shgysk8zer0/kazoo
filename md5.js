@@ -1,5 +1,3 @@
-import '@shgysk8zer0/polyfills';
-
 const K = new Uint32Array([
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
@@ -25,6 +23,7 @@ const s = [
 	4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
 	6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
 ];
+
 const a0 = 0x67452301;
 const b0 = 0xefcdab89;
 const c0 = 0x98badcfe;

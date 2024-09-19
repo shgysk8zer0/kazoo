@@ -4,7 +4,7 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="color-scheme" content="light dark" />
-		<meta http-equiv="Content-Security-Policy-Resport-Only" content="
+		<meta http-equiv="Content-Security-Policy-Report-Only" content="
 			default-src 'self';
 			base-uri 'self';
 			manifest-src 'self';
@@ -71,11 +71,9 @@
 				}
 			}
 		</script>
-		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous"
-			integrity="sha384-uaVA9Le/fIJMMUrQHZyGJ+aAH3EdIhOLxPl+cuBCvvZBltVoc+Kemy4t8KLX3/aF"
-			src="https://unpkg.com/@shgysk8zer0/polyfills@0.4.2/all.min.js" fetchpriority="high"></script>
+		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-CP/nVh8lHR1uyEXUkbQ4YZijSR9xfxvXCVxsFVsWs1FjURa8jEqvpz0c3VL8Rw0e" src="https://unpkg.com/@shgysk8zer0/polyfills@0.4.3/all.min.js" fetchpriority="auto"></script>
 		<script type="module" src="./js/policy.js" referrerpolicy="no-referrer"></script>
-		<script type="module" src="./js/index.js" referrerpolicy="no-referrer" integrity="sha256-p0PliQygKghFPrLCBwXWgQHQFkJBIO0kqxHkqT/S03g="></script>
+		<script type="module" src="./js/index.js" referrerpolicy="no-referrer" integrity="sha256-UuBtqeX4dV+EKTn/48Csr8FfLuM2EMrbeAhbUaPqkSE="></script>
 		<link rel="stylesheet" href="./css/index.css" referrerpolicy="no-referrer" media="all" />
 		<link rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha384-Uhn9VRzdRxBVYRT2aPFl8ECva7znqyZwWiqpE3v4GTBe8y2XrpwTWZtU1U5vujcN" media="not (prefers-color-scheme: dark)" href="https://unpkg.com/highlight.js@11.9.0/styles/github.css" fetchpriority="low">
 		<link rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha384-s+/XrBtU6QDoYle5GTN5r/bD998lHLNZbk0ywd2wxEgwwxx64zJpPP2Lu2kSyZsK" media="(prefers-color-scheme: dark)" href="https://unpkg.com/highlight.js@11.9.0/styles/github-dark.css" fetchpriority="low" />
@@ -86,6 +84,15 @@
 		<header id="header"></header>
 		<nav id="nav"></nav>
 		<main id="main">
+			<form id="grav">
+				<fieldset>
+					<legend>Gravatar Test</legend>
+					<label for="email">Email Address</label>
+					<input type="email" name="email" id="email" placeholder="user@example.com" required="" />
+				</fieldset>
+				<button type="submit">Submit</button>
+				<button type="reset">Reset</button>
+			</form>
 			<div data-template="./lorem.html"></div>
 			<form id="contact">
 				<input type="text" name="subject" id="subject" placeholder="Subject" />
