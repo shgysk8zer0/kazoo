@@ -162,7 +162,7 @@ export async function openFile({
 						if (input.showPicker instanceof Function) {
 							try {
 								input.showPicker({ signal });
-							} catch(err) {
+							} catch {
 								setTimeout(() => input.click(), 200);
 							}
 						} else {
