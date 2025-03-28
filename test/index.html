@@ -4,27 +4,6 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="color-scheme" content="light dark" />
-		<meta http-equiv="Content-Security-Policy-Report-Only" content="
-			default-src 'self';
-			base-uri 'self';
-			manifest-src 'self';
-			prefetch-src 'self';
-			script-src 'self' https://unpkg.com/ 'nonce-3b58877b-25c3-4af2-975f-76607bd7c78e' blob:;
-			style-src 'self' https://unpkg.com/ blob:;
-			font-src cdn.kernvalley.us;
-			form-action 'none';
-			frame-src data: https://www.youtube-nocookie.com/embed/ https://calendar.google.com/calendar/embed https://www.google.com/maps/embed https://whiskeyflatdays.com/embed/ https://events.kernvalley.us/embed/ https://whiskeyflatdays.com/mayors/embed/;
-			object-src 'none';
-			media-src 'none';
-			child-src 'self';
-			worker-src 'self';
-			frame-ancestors 'none';
-			connect-src 'self' https://unpkg.com/ https://api.github.com/users/ https://api.github.com/repos/ https://api.pwnedpasswords.com/range/ https://maps.kernvalley.us/places/ https://events.kernvalley.us/events.json https://events.kernvalley.us/cal/krv-events.ics https://whiskeyflatdays.com/events.json https://whiskeyflatdays.com/mayors/events.json;
-			img-src * data: blob:;
-			require-trusted-types-for 'script';
-			trusted-types default aegis-sanitizer#html youtube#script-url github-user#html github-repo#html blob#script-url goog-cal#script-url goog-maps#script-url krv#embed;
-			upgrade-insecure-requests;"
-		/>
 		<title>Kazoo</title>
 		<base href="./" />
 		<script type="importmap" nonce="3b58877b-25c3-4af2-975f-76607bd7c78e">
@@ -71,9 +50,9 @@
 				}
 			}
 		</script>
-		<script type="application/javascript" defer="" referrerpolicy="no-referrer" crossorigin="anonymous" integrity="sha384-CP/nVh8lHR1uyEXUkbQ4YZijSR9xfxvXCVxsFVsWs1FjURa8jEqvpz0c3VL8Rw0e" src="https://unpkg.com/@shgysk8zer0/polyfills@0.4.3/all.min.js" fetchpriority="auto"></script>
+		<script type="application/javascript" defer="" referrerpolicy="no-referrer" fetchpriority="auto" crossorigin="anonymous" integrity="sha384-T7G03xAxCsbFKNRRvaId3sokCOoB1pV75XfybfcqIauhaQ4JyKdTYoBFpLuTS4ul" src="https://unpkg.com/@shgysk8zer0/polyfills@0.4.9/browser.min.js"></script>
 		<script type="module" src="./js/policy.js" referrerpolicy="no-referrer"></script>
-		<script type="module" src="./js/index.js" referrerpolicy="no-referrer" integrity="sha256-UuBtqeX4dV+EKTn/48Csr8FfLuM2EMrbeAhbUaPqkSE="></script>
+		<script type="module" src="./js/index.js" referrerpolicy="no-referrer"></script>
 		<link rel="stylesheet" href="./css/index.css" referrerpolicy="no-referrer" media="all" />
 		<link rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha384-Uhn9VRzdRxBVYRT2aPFl8ECva7znqyZwWiqpE3v4GTBe8y2XrpwTWZtU1U5vujcN" media="not (prefers-color-scheme: dark)" href="https://unpkg.com/highlight.js@11.9.0/styles/github.css" fetchpriority="low">
 		<link rel="stylesheet" crossorigin="anonymous" referrerpolicy="no-referrer" integrity="sha384-s+/XrBtU6QDoYle5GTN5r/bD998lHLNZbk0ywd2wxEgwwxx64zJpPP2Lu2kSyZsK" media="(prefers-color-scheme: dark)" href="https://unpkg.com/highlight.js@11.9.0/styles/github-dark.css" fetchpriority="low" />

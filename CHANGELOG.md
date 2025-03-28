@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.0.10] - 2025-03-28
+
+### Added
+- Add `AttrTokenList` (similar to `DOMTokenList`)
+- Add utility functions for ISO 8601 Durations & RegExp constant
+
+### Changed
+- Switch to using `@shgysk8zer0/http-server`
+
 ## [v1.0.9] - 2024-09-19
 
 ### Added
