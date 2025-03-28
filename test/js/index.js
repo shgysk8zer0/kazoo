@@ -12,6 +12,7 @@ import { open } from '../../filesystem.js';
 import { alert } from '../../asyncDialog.js';
 import { fileToImage } from '../../img-utils.js';
 import { btnStyles } from './styles.js';
+import { AttrTokenList } from '../../AttrTokenList.js';
 // import { fillShareTarget } from '../../share-target.js';
 import { addStyle } from '@shgysk8zer0/jswaggersheets';
 import { fetchMarkdown, registerLanguage } from '../../markdown.js';
@@ -25,6 +26,12 @@ registerLanguage('javascript', javascript);
 registerLanguage('bash', bash);
 registerLanguage('xml', xml);
 registerLanguage('html', xml);
+
+Object.defineProperty(document.body, 'tokens', {
+	value: AttrTokenList.bindTo(document.body, 'tokens'),
+});
+
+document.body.tokens.add('foo', 'bar');
 
 on('#grav', 'submit', async event => {
 	event.preventDefault();

@@ -5,6 +5,7 @@ import { randomInt } from './math.js';
 import { isAsyncFunction, getDeferred } from './promises.js';
 import { isScriptURL, isTrustPolicy } from './trust.js';
 import { isBare, resolveModule } from './module.js';
+import { ISO_8601_DURATION_PATTERN } from './date-consts.js';
 
 const funcs = new WeakMap();
 
@@ -463,15 +464,70 @@ export async function filterKeys(obj, keys) {
  * Safely executes a callback function and returns a tuple of [result, error].
  *
  * @param {Function} cb - The callback function to execute.
- * @returns {Promise<[any, Error|null]>} A promise that resolves with a tuple `[result|null, Error|null]`.
- *          The tuple is frozen to ensure immutability.
+ * @returns {Promise<[any, null] | [null, Error]>} A promise that resolves with a frozen tuple `[result|null, Error|null]`.
  */
-export async function safeExecute(cb) {
+export async function getFuncResult(cb) {
 	if (! (cb instanceof Function)) {
-		return Object.freeze(null, new TypeError('Callback is not a function.'));
+		return Object.freeze([null, new TypeError('Callback is not a function.')]);
 	} else {
-		return Promise.try(cb)
-			.then(result => Object.freeze([result, null]))
-			.catch(err => Object.freeze([null, err]));
+		return Promise.try(cb).then(
+			result => {
+				if (result instanceof Error) {
+					return Object.freeze([null, result]);
+				} else {
+					return Object.freeze([result, null]);
+				}
+			},
+			err => {
+				if (err instanceof Error) {
+					return Object.freeze([null, err]);
+				} else {
+					return Object.freeze([null, new Error(err)]);
+				}
+			});
 	}
 }
+
+export async function mapAsync(iterable, callback, thisArg) {
+	if (typeof callback !== 'function') {
+		return await Promise.all(iterable);
+	} else if (typeof thisArg === 'undefined') {
+		const promises = Array.from(
+			iterable,
+			async result => (result instanceof Promise ? result : Promise.resolve(result))
+				.then(resolved => callback(resolved))
+		);
+
+		return await Promise.all(promises);
+	} else {
+		const promises = Array.from(
+			iterable,
+			async result => (result instanceof Promise ? result : Promise.resolve(result))
+				.then(resolved => callback.call(thisArg, resolved))
+		);
+
+		return await Promise.all(promises);
+	}
+}
+
+/**
+ * Validates an ISO 8601 duration string.
+ *
+ * @param {string} period The ISO 8601 duration string (eg "P3Y6M4DT12H30M5S") to validate.
+ * @returns {boolean} Whether or not the string is a valid ISO 8601 duration.
+ * @see https://en.wikipedia.org/wiki/ISO_8601
+ */
+export const validateISO8601Duration = period => typeof period === 'string' && period.length !== 0 && ISO_8601_DURATION_PATTERN.test(period);
+
+/**
+ * Parses an ISO 8601 duration string into an object.
+ *
+ * @param {string} period The ISO 8601 duration string (eg "P3Y6M4DT12H30M5S") to parse.
+ * @returns {{years: number, months: number, weeks: number, days: number, hours: number, minutes: number, seconds: number}} An object containing the parsed duration components.
+ * @see https://en.wikipedia.org/wiki/ISO_8601
+ */
+export const parseISO8601Duration = period => typeof period === 'string' && period.length !== 0 ? Object.fromEntries(
+	Object.entries(
+		ISO_8601_DURATION_PATTERN.exec(period.trim())?.groups ?? {}
+	).map(([name, val]) => [name, Math.max(parseFloat(val), 0) || 0])
+): { years: 0, months: 0, weeks: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };

@@ -39,7 +39,7 @@
     "test": "npm run lint:js && npm run lint:html && npm run run:tests",
     "preversion": "npm test",
     "prepare": "npm test",
-    "start": "http-server ${npm_package_config_serve_path} -c-1 --port ${npm_package_config_serve_port} --gzip true --brotli true -a ${npm_package_config_serve_domain} -o /test/",
+    "start": "http-server -c ./http.config.js",
     "fix": "npm run fix:js",
     "fix:js": "eslint . --fix",
     "lint:js": "eslint .",
@@ -79,9 +79,10 @@
   "homepage": "https://github.com/shgysk8zer0/kazoo#readme",
   "devDependencies": {
     "@shgysk8zer0/eslint-config": "^1.0.1",
+    "@shgysk8zer0/http-server": "^1.0.5",
+    "@shgysk8zer0/http-server-echo": "^1.0.3",
     "@shgysk8zer0/js-utils": "^1.0.0",
     "@shgysk8zer0/polyfills": "^0.4.2",
-    "htmlhint": "^1.1.4",
-    "http-server": "^14.1.1"
+    "htmlhint": "^1.1.4"
   }
 }

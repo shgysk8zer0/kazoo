@@ -1,6 +1,9 @@
 /**
  * @copyright 2023 Chris Zuber <admin@kernvalley.us>
  */
+
+export const ISO_8601_DURATION_PATTERN = /^P(?:(?<years>\d+)Y)?(?:(?<months>\d+(\.\d+)?)M)?(?:(?<weeks>\d+(\.\d+)?)W)?(?:(?<days>\d+(\.\d+)?)D)?(?:T(?:(?<hours>\d+(\.\d+)?)H)?(?:(?<minutes>\d+(\.\d+)?)M)?(?:(?<seconds>\d+(\.\d+)?)S)?)?$/;
+
 export const SECONDS = 1000;
 
 export const MINUTES = 60 * SECONDS;
