@@ -109,9 +109,9 @@ export function rgbToHSL({ red = 0, green = 0, blue = 0 }) {
 	const cmin = Math.min(r, g, b);
 	const cmax = Math.max(r, g, b);
 	const delta = cmax - cmin;
-	let h = 0;
-	let s = 0;
-	let l = 0;
+	let h;
+	let s;
+	let l;
 
 	if (delta === 0) {
 		h = 0;

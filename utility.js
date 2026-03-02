@@ -292,7 +292,7 @@ export function errorToEvent(error, type = 'error') {
 }
 
 export function callOnce(callback, thisArg) {
-	if (callback.once instanceof Function) {
+	if (typeof callback?.once === 'function') {
 		return callback.once(thisArg);
 	} else {
 		return function(...args) {
