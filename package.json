@@ -1,6 +1,6 @@
 {
   "name": "@shgysk8zer0/kazoo",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "private": false,
   "type": "module",
   "description": "A JavaScript monorepo for all the things!",
@@ -78,11 +78,11 @@
   },
   "homepage": "https://github.com/shgysk8zer0/kazoo#readme",
   "devDependencies": {
-    "@shgysk8zer0/eslint-config": "^1.0.1",
-    "@shgysk8zer0/http-server": "^1.0.5",
-    "@shgysk8zer0/http-server-echo": "^1.0.3",
-    "@shgysk8zer0/js-utils": "^1.0.0",
-    "@shgysk8zer0/polyfills": "^0.6.0",
+    "@shgysk8zer0/eslint-config": "^1.0.7",
+    "@shgysk8zer0/http-server": "^1.1.1",
+    "@shgysk8zer0/http-server-echo": "^1.0.4",
+    "@shgysk8zer0/js-utils": "^1.0.3",
+    "@shgysk8zer0/polyfills": "^0.6.2",
     "htmlhint": "^1.1.4"
   }
 }
