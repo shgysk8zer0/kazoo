@@ -1,8 +1,8 @@
 /**
- * @copyright 2023-2024 Chris Zuber <admin@kernvalley.us>
+ * @copyright 2023-2026 Chris Zuber <admin@kernvalley.us>
  */
 import { randomInt } from './math.js';
-import { isAsyncFunction, getDeferred } from './promises.js';
+import { isAsyncFunction } from './promises.js';
 import { isScriptURL, isTrustPolicy } from './trust.js';
 import { isBare, resolveModule } from './module.js';
 import { ISO_8601_DURATION_PATTERN } from './date-consts.js';
@@ -21,13 +21,17 @@ export const autoServiceWorkerRegistration = callOnce(async ({
 	policy = 'trustedTypes' in globalThis ? trustedTypes.defaultPolicy : null,
 } = {}) => {
 	if ('serviceWorker' in navigator && 'serviceWorker' in document.documentElement.dataset) {
-		const { serviceWorker, scope = '/', updateViaCache } = document.documentElement.dataset;
+		const {
+			serviceWorker,
+			scope = '/',
+			serviceWorkerUpdateViaCache: updateViaCache = 'imports',
+			serviceWorkerType: type = 'classic' } = document.documentElement.dataset;
 
 		try {
 			if (isTrustPolicy(policy)) {
-				await registerServiceWorker(policy.createScriptURL(serviceWorker), { scope, updateViaCache });
+				await registerServiceWorker(policy.createScriptURL(serviceWorker), { scope, updateViaCache, type });
 			} else {
-				await registerServiceWorker(serviceWorker, { scope, updateViaCache });
+				await registerServiceWorker(serviceWorker, { scope, updateViaCache, type });
 			}
 
 			await reloadOnUpdate();
@@ -79,7 +83,7 @@ export async function registerServiceWorker(source, {
 	type = 'classic',
 	updateViaCache = 'none',
 } = {}) {
-	const { resolve, reject, promise } = getDeferred();
+	const { resolve, reject, promise } = Promise.withResolvers();
 
 	if (! ('serviceWorker' in navigator && navigator.serviceWorker.register instanceof Function)) {
 		reject(new DOMException('Service worker not supported'));
