@@ -61,8 +61,8 @@ export function stripHTML(input) {
 }
 
 export function sanitizeHTML(input, { elements, attributes, comments } = {}) {
-	if (Element.prototype.setHTML instanceof Function) {
-		const el = document.createElement('div');
+	if (typeof Element.prototype.setHTML === 'function') {
+		const el = document.createElement('template');
 		el.setHTML(input, { sanitizer: { elements, attributes, comments }});
 		return el.innerHTML;
 	} else {
