@@ -82,7 +82,7 @@
     "@shgysk8zer0/http-server": "^1.1.1",
     "@shgysk8zer0/http-server-echo": "^1.0.4",
     "@shgysk8zer0/js-utils": "^1.0.3",
-    "@shgysk8zer0/polyfills": "^0.6.2",
+    "@shgysk8zer0/polyfills": "^0.8.6",
     "htmlhint": "^1.1.4"
   }
 }
